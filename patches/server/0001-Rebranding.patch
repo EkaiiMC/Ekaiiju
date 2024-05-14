@@ -5,10 +5,10 @@ Subject: [PATCH] Rebranding
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 38352926640d97449256d50ebdec619ce9e695a0..f282bae28ef193b54989a97890ec81f421bf6ef1 100644
+index b1d621ed91c74790fd5b66339c044ec444de62ef..35414701780d6ca24a2c2772a1b7cb6322bb075b 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -14,7 +14,7 @@ val alsoShade: Configuration by configurations.creating
+@@ -13,7 +13,7 @@ val alsoShade: Configuration by configurations.creating
  
  dependencies {
      // Folia start
@@ -17,7 +17,7 @@ index 38352926640d97449256d50ebdec619ce9e695a0..f282bae28ef193b54989a97890ec81f4
      implementation("io.papermc.paper:paper-mojangapi:${project.version}") {
          exclude("io.papermc.paper", "paper-api")
      }
-@@ -74,7 +74,7 @@ tasks.jar {
+@@ -83,7 +83,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
@@ -27,7 +27,7 @@ index 38352926640d97449256d50ebdec619ce9e695a0..f282bae28ef193b54989a97890ec81f4
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
 diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
-index cb60d58d4a7556dd896f31d0cd249f860bb3ef84..c9ccc016044f2b179c291d9d5b2a43967cca119a 100644
+index cb60d58d4a7556dd896f31d0cd249f860bb3ef84..6b92c4941e8dbcb1adedd2c8e7a457922df5936f 100644
 --- a/src/main/java/com/destroystokyo/paper/Metrics.java
 +++ b/src/main/java/com/destroystokyo/paper/Metrics.java
 @@ -593,7 +593,7 @@ public class Metrics {
@@ -39,19 +39,20 @@ index cb60d58d4a7556dd896f31d0cd249f860bb3ef84..c9ccc016044f2b179c291d9d5b2a4396
  
                  metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
                      String minecraftVersion = Bukkit.getVersion();
-@@ -612,6 +612,7 @@ public class Metrics {
+@@ -611,7 +611,7 @@ public class Metrics {
+                 } else {
                      paperVersion = "unknown";
                  }
-                 metrics.addCustomChart(new Metrics.SimplePie("folia_version", () -> paperVersion)); // Folia - we have our own bstats page
+-                metrics.addCustomChart(new Metrics.SimplePie("folia_version", () -> paperVersion)); // Folia - we have our own bstats page
 +                metrics.addCustomChart(new Metrics.SimplePie("kaiiju_version", () -> (org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion() != null) ? org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion() : "unknown")); // Kaiiju
  
                  metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
                      Map<String, Map<String, Integer>> map = new HashMap<>();
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-index e2f704c115fd6e00960bb56bb0779f1100c89c17..95bc514df2022dde265b84490d3d0db002685024 100644
+index e2f704c115fd6e00960bb56bb0779f1100c89c17..d06b28458c98619de8545d4917da2771375d2b0b 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-@@ -20,9 +20,11 @@ import java.util.stream.StreamSupport;
+@@ -20,7 +20,10 @@ import java.util.stream.StreamSupport;
  public class PaperVersionFetcher implements VersionFetcher {
      private static final java.util.regex.Pattern VER_PATTERN = java.util.regex.Pattern.compile("^([0-9\\.]*)\\-.*R"); // R is an anchor, will always give '-R' at end
      private static final String GITHUB_BRANCH_NAME = "master";
@@ -61,11 +62,9 @@ index e2f704c115fd6e00960bb56bb0779f1100c89c17..95bc514df2022dde265b84490d3d0db0
 +    private static int distance = -2; public int distance() { return distance; }
 +    // Kaiiju end
      private static @Nullable String mcVer;
--
+ 
      @Override
-     public long getCacheTime() {
-         return 720000;
-@@ -31,8 +33,8 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -31,8 +34,8 @@ public class PaperVersionFetcher implements VersionFetcher {
      @Nonnull
      @Override
      public Component getVersionMessage(@Nonnull String serverVersion) {
@@ -76,7 +75,7 @@ index e2f704c115fd6e00960bb56bb0779f1100c89c17..95bc514df2022dde265b84490d3d0db0
          final Component history = getHistory();
  
          return history != null ? TextComponent.ofChildren(updateMessage, Component.newline(), history) : updateMessage;
-@@ -45,7 +47,7 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -45,7 +48,7 @@ public class PaperVersionFetcher implements VersionFetcher {
                  String result = matcher.group();
                  mcVer = result.substring(0, result.length() - 2); // strip 'R' anchor and trailing '-'
              } else {
@@ -85,7 +84,7 @@ index e2f704c115fd6e00960bb56bb0779f1100c89c17..95bc514df2022dde265b84490d3d0db0
                  org.bukkit.Bukkit.getLogger().warning("Pattern: " + VER_PATTERN.toString());
                  org.bukkit.Bukkit.getLogger().warning("Version: " + org.bukkit.Bukkit.getBukkitVersion());
              }
-@@ -56,6 +58,7 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -56,6 +59,7 @@ public class PaperVersionFetcher implements VersionFetcher {
  
      private static Component getUpdateStatusMessage(@Nonnull String repo, @Nonnull String branch, @Nonnull String versionInfo) {
          int distance;
@@ -93,7 +92,7 @@ index e2f704c115fd6e00960bb56bb0779f1100c89c17..95bc514df2022dde265b84490d3d0db0
          try {
              int jenkinsBuild = Integer.parseInt(versionInfo);
              distance = fetchDistanceFromSiteApi(jenkinsBuild, getMinecraftVersion());
-@@ -63,6 +66,11 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -63,6 +67,11 @@ public class PaperVersionFetcher implements VersionFetcher {
              versionInfo = versionInfo.replace("\"", "");
              distance = fetchDistanceFromGitHub(repo, branch, versionInfo);
          }
@@ -119,7 +118,7 @@ index c5d5648f4ca603ef2b1df723b58f9caf4dd3c722..1c7b5d91e914efbcfb50c6137c776078
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
 diff --git a/src/main/java/net/minecraft/CrashReport.java b/src/main/java/net/minecraft/CrashReport.java
-index e047dee632022abfe05865d1e71838be8d5d053a..a63612c2d97625fe96a810091eae7b02e87bbc31 100644
+index 4f3cc14d48690bb183d09bb7a5ba1e23e8a0c08a..58f516100fe919a19ad8be341eccbdc4b67a9053 100644
 --- a/src/main/java/net/minecraft/CrashReport.java
 +++ b/src/main/java/net/minecraft/CrashReport.java
 @@ -127,7 +127,7 @@ public class CrashReport {
@@ -132,10 +131,10 @@ index e047dee632022abfe05865d1e71838be8d5d053a..a63612c2d97625fe96a810091eae7b02
          stringbuilder.append(CrashReport.DATE_TIME_FORMATTER.format(ZonedDateTime.now()));
          stringbuilder.append("\n");
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 9ea861c1531c5f9d8a87e45512336eba3bddf06a..ae0c51a324983d307013459adbd01215bbfc6228 100644
+index 49a121862fbb823a00753d99d24d04c87479fcd1..8c59d02198541e5e37fc12bbb90841a921398519 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1027,7 +1027,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1029,7 +1029,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          shutdownThread = Thread.currentThread();
          org.spigotmc.WatchdogThread.doStop(); // Paper
          if (false && !isSameThread()) { // Folia - region threading
@@ -144,46 +143,20 @@ index 9ea861c1531c5f9d8a87e45512336eba3bddf06a..ae0c51a324983d307013459adbd01215
              while (this.getRunningThread().isAlive()) {
                  this.getRunningThread().stop();
                  try {
-@@ -1965,7 +1965,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2020,7 +2020,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @DontObfuscate
      public String getServerModName() {
--        return "Folia"; // Folia - Folia > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
-+        return "Kaiiju"; // Kaiiju - Kaiiju > // Folia - Folia > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
+-        return "Folia"; // Paper // Folia - Folia
++        return "Kaiiju"; // Paper // Folia - Folia // Kaiiju - Kaiiju
      }
  
      public SystemReport fillSystemReport(SystemReport details) {
-diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 7d1be59d03fa4e46295bc91943fea16bd9c7c802..a0cdf028efc1742079b4e4374fb351a2532ea06f 100644
---- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-+++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -264,7 +264,7 @@ import javax.annotation.Nullable; // Paper
- import javax.annotation.Nonnull; // Paper
- 
- public final class CraftServer implements Server {
--    private final String serverName = "Folia"; // Folia // Paper
-+    private final String serverName = "Kaiiju"; // Kaiiju // Folia // Paper
-     private final String serverVersion;
-     private final String bukkitVersion = Versioning.getBukkitVersion();
-     private final Logger logger = Logger.getLogger("Minecraft");
-diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java
-index 9da62ca03e60c8cbe4714c7056c7642cce2c0b9e..c98c2708a5a91de6e02e7d79b1340aa7896189fb 100644
---- a/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java
-+++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftLivingEntity.java
-@@ -923,7 +923,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
-             return EntityCategory.WATER;
-         }
- 
--        throw new UnsupportedOperationException("Unsupported monster type: " + type + ". This is a bug, report this to Spigot.");
-+        throw new UnsupportedOperationException("Unsupported monster type: " + type + ". This is a bug, report this to Kaiiju."); // Kaiiju
-     }
- 
-     @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
-index 2c3e1b420303a3c3a9315983fbc7e47423f7d9e4..ca685387b21ffe68b0d1ca64f95e9911b5d7e35b 100644
+index b00e3b9b628f3d2a2fdbf1d2c77904963c16d3ac..aebc83a34b33cf7d03c34cb8009dc2d0d8af2a8d 100644
 --- a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
 +++ b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
-@@ -501,7 +501,7 @@ public class CraftScheduler implements BukkitScheduler {
+@@ -503,7 +503,7 @@ public class CraftScheduler implements BukkitScheduler {
                  this.parsePending();
              } else {
                  // this.debugTail = this.debugTail.setNext(new CraftAsyncDebugger(currentTick + CraftScheduler.RECENT_TICKS, task.getOwner(), task.getTaskClass())); // Paper
@@ -206,7 +179,7 @@ index e9b6ca3aa25e140467ae866d572483050ea3fa0e..5df2b0fceebaaa863f4f143c8f29e808
  
          if (stream != null) {
 diff --git a/src/main/java/org/spigotmc/WatchdogThread.java b/src/main/java/org/spigotmc/WatchdogThread.java
-index 40dcdf6885e99b26283a9ea2bd4d4bf6ec358e71..3f7c1f8372c7f6a0ff723a52255a2d2f393a2eca 100644
+index 6db566e3111ec08a99aa429624979cb83a85e272..65c4c022e551ae70b1176aae4e98d5f7dcb77031 100644
 --- a/src/main/java/org/spigotmc/WatchdogThread.java
 +++ b/src/main/java/org/spigotmc/WatchdogThread.java
 @@ -155,14 +155,14 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
@@ -227,7 +200,7 @@ index 40dcdf6885e99b26283a9ea2bd4d4bf6ec358e71..3f7c1f8372c7f6a0ff723a52255a2d2f
                  //
                  if ( net.minecraft.world.level.Level.lastPhysicsProblem != null )
                  {
-@@ -185,12 +185,12 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
+@@ -184,12 +184,12 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
                  // Paper end
                  } else
                  {
@@ -239,10 +212,10 @@ index 40dcdf6885e99b26283a9ea2bd4d4bf6ec358e71..3f7c1f8372c7f6a0ff723a52255a2d2f
                  log.log( Level.SEVERE, "------------------------------" );
 -                log.log( Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Paper!):" ); // Paper
 +                log.log( Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Kaiiju!):" ); // Paper // Kaiiju
-                 io.papermc.paper.chunk.system.scheduling.ChunkTaskScheduler.dumpAllChunkLoadInfo(isLongTimeout); // Paper // Paper - rewrite chunk system
+                 io.papermc.paper.chunk.system.scheduling.ChunkTaskScheduler.dumpAllChunkLoadInfo(isLongTimeout); // Paper - rewrite chunk system
                  this.dumpTickingInfo(); // Paper - log detailed tick information
                  WatchdogThread.dumpThread( ManagementFactory.getThreadMXBean().getThreadInfo( MinecraftServer.getServer().serverThread.getId(), Integer.MAX_VALUE ), log );
-@@ -206,7 +206,7 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
+@@ -205,7 +205,7 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
                      WatchdogThread.dumpThread( thread, log );
                  }
                  } else {

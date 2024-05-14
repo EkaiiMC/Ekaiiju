@@ -6,25 +6,24 @@ Subject: [PATCH] Send null entity packets
 This is from Purpur. Don't send null entity packets.
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-index fa829cef4033625470dfae29ddf777e6c5ab8c55..47e23a196ae5e44600a64184b69141c00235baca 100644
+index 2791fe6cc78cc13d969a903134c08e992a6ecdca..b844aa96f533f5e55b6483d079b91f8f980d6229 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-@@ -203,7 +203,10 @@ public class KaiijuConfig {
-         else
-             linearFlushThreads = Math.max(linearFlushThreads, 1);
+@@ -193,6 +193,9 @@ public class KaiijuConfig {
+         return builder.build();
      }
-+    
-+    public static boolean sendNullEntityPackets = true;
  
++    public static boolean sendNullEntityPackets = true;
++
      private static void networkSettings() {
 +        sendNullEntityPackets = getBoolean("network.send-null-entity-packets", sendNullEntityPackets);
      }
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerEntity.java b/src/main/java/net/minecraft/server/level/ServerEntity.java
-index 892a334d1b1c0784ed6838d1aa066403998b9a9f..eab1b19323f588030834b9a4cecd515c817f79d1 100644
+index f16a69775332a08ed0e87d27acd0fc959359694c..04436560678502ff3c55d0f830d61cbe0764c542 100644
 --- a/src/main/java/net/minecraft/server/level/ServerEntity.java
 +++ b/src/main/java/net/minecraft/server/level/ServerEntity.java
-@@ -198,6 +198,11 @@ public class ServerEntity {
+@@ -211,6 +211,11 @@ public class ServerEntity {
                          flag4 = true;
                          flag5 = true;
                      }
@@ -36,7 +35,7 @@ index 892a334d1b1c0784ed6838d1aa066403998b9a9f..eab1b19323f588030834b9a4cecd515c
                  }
  
                  if ((this.trackDelta || this.entity.hasImpulse || this.entity instanceof LivingEntity && ((LivingEntity) this.entity).isFallFlying()) && this.tickCount > 0) {
-@@ -270,6 +275,20 @@ public class ServerEntity {
+@@ -291,6 +296,20 @@ public class ServerEntity {
          });
      }
  

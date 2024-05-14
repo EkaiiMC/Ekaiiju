@@ -5,10 +5,10 @@ Subject: [PATCH] Server mod name
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-index 859c2ac4e46b840f9552d1ccbf9409c9666e84de..2aa40f154c48ee7558b0efdc3bf26e205bb9f799 100644
+index f0bd3753d3984d83c49d49e159dc7fc6ffb48bfd..e746cf96a02c7b15bf448e77b297f85d61743d97 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-@@ -213,6 +213,9 @@ public class KaiijuConfig {
+@@ -202,6 +202,9 @@ public class KaiijuConfig {
      private static void optimizationSettings() {
      }
  
@@ -19,15 +19,15 @@ index 859c2ac4e46b840f9552d1ccbf9409c9666e84de..2aa40f154c48ee7558b0efdc3bf26e20
      }
  }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index f27e03144b6cfa3d6d60fc090432de2afc54ff86..13361dc06c54b9a12ca7330d268cfa934c167796 100644
+index 8c59d02198541e5e37fc12bbb90841a921398519..3bb7b3088295d0195dfa811b360fb5e48c7f9cc5 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1965,7 +1965,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2020,7 +2020,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @DontObfuscate
      public String getServerModName() {
--        return "Kaiiju"; // Kaiiju - Kaiiju > // Folia - Folia > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
-+        return dev.kaiijumc.kaiiju.KaiijuConfig.serverModName; // Kaiiju - Kaiiju > // Folia - Folia > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
+-        return "Kaiiju"; // Paper // Folia - Folia // Kaiiju - Kaiiju
++        return dev.kaiijumc.kaiiju.KaiijuConfig.serverModName; // Paper // Folia - Folia // Kaiiju - Kaiiju
      }
  
      public SystemReport fillSystemReport(SystemReport details) {

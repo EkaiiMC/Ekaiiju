@@ -5,10 +5,10 @@ Subject: [PATCH] Option to disable vanish api
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-index 2aa40f154c48ee7558b0efdc3bf26e205bb9f799..2041733197e46e520a07f2aac15a5c4c37f2d378 100644
+index e746cf96a02c7b15bf448e77b297f85d61743d97..fb9e40c414b0428c1bd51730f78ed23a5e50f12e 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-@@ -210,7 +210,10 @@ public class KaiijuConfig {
+@@ -199,7 +199,10 @@ public class KaiijuConfig {
          sendNullEntityPackets = getBoolean("network.send-null-entity-packets", sendNullEntityPackets);
      }
  
@@ -20,10 +20,10 @@ index 2aa40f154c48ee7558b0efdc3bf26e205bb9f799..2041733197e46e520a07f2aac15a5c4c
  
      public static String serverModName = "Kaiiju";
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index ac0b15fac82d453c03e2cd4915f6fcbf3f7cb425..377a89f7bfe4d26a40776f4c22211cc0d0fe4cfe 100644
+index c547d51eebd965f2be7ac45bc0981626c0515ef1..72b0118f349dd2300235bcacfbf12deba7ec367a 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
-@@ -1418,7 +1418,11 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -1422,7 +1422,11 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
                  // Folia end - region threading
  
                  // CraftBukkit start - respect vanish API

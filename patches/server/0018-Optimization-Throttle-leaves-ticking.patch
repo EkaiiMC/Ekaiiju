@@ -5,10 +5,10 @@ Subject: [PATCH] Optimization: Throttle leaves ticking.
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-index 035f2f2598c2d2a6dd5335e78175f7577f316f1e..3ce098436d01146316bd76c76fa9d5e6b3d6f819 100644
+index 5b9d1b184d749f3370c7431bc1aacbe189e8a46f..6c19f67ccb41fb81ad6bd80f18bc8dee67aacad8 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-@@ -231,4 +231,13 @@ public class KaiijuConfig {
+@@ -220,4 +220,13 @@ public class KaiijuConfig {
      private static void highlyExperimentalSettingsDontEnable() {
          disableOWNetherScale = getBoolean("highly-experimental-settings-dont-enable.disable-ow-nether-scale", disableOWNetherScale);
      }
@@ -23,7 +23,7 @@ index 035f2f2598c2d2a6dd5335e78175f7577f316f1e..3ce098436d01146316bd76c76fa9d5e6
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/LeavesBlock.java b/src/main/java/net/minecraft/world/level/block/LeavesBlock.java
-index 415db10a16759ae93bb6302d5d5be4a6dcebe16a..a202fc654e11db89e52ae2413b51ce914ab6d99a 100644
+index 07d9696c9bf0a783367a76ebad2273a2c495bc8f..6d570471c059ac0a9f30149778c2ec29baccb8f6 100644
 --- a/src/main/java/net/minecraft/world/level/block/LeavesBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/LeavesBlock.java
 @@ -76,8 +76,21 @@ public class LeavesBlock extends Block implements SimpleWaterloggedBlock {
@@ -35,7 +35,7 @@ index 415db10a16759ae93bb6302d5d5be4a6dcebe16a..a202fc654e11db89e52ae2413b51ce91
 +    // Kaiiju end
 +
      @Override
-     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+     protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
 +        // Kaiiju start
 +        if (dev.kaiijumc.kaiiju.KaiijuConfig.throttleLeavesTicking) {
 +            if (leavesThrottling == -1) leavesThrottling = random.nextInt(20 * 60) + 1;

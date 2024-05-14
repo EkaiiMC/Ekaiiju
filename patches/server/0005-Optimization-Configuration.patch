@@ -5,10 +5,10 @@ Subject: [PATCH] Optimization Configuration
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-index 47e23a196ae5e44600a64184b69141c00235baca..90d97f3e0500a38e64ec0b88b2cab6ef28640c10 100644
+index b844aa96f533f5e55b6483d079b91f8f980d6229..94f16629b6c8a8be0df49f72744cf09e2ce94704 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-@@ -209,4 +209,7 @@ public class KaiijuConfig {
+@@ -198,4 +198,7 @@ public class KaiijuConfig {
      private static void networkSettings() {
          sendNullEntityPackets = getBoolean("network.send-null-entity-packets", sendNullEntityPackets);
      }
@@ -17,12 +17,12 @@ index 47e23a196ae5e44600a64184b69141c00235baca..90d97f3e0500a38e64ec0b88b2cab6ef
 +    }
  }
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index a6e7af5f4148e067660e9f5beeacde3a59a1de9c..6bd14857e0b0ef233f17f1a6e3e0fb313d59f641 100644
+index 87ca934473f3b9553c1b9b3ed60e0fa07838c711..ffa090cf3f72ae7cf2b6352b2de38e152f032a60 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-@@ -143,4 +143,7 @@ public class KaiijuWorldConfig {
-             regionFormatLinearCompressionLevel = 1;
-         }
+@@ -122,4 +122,7 @@ public class KaiijuWorldConfig {
+         final Map<String, Object> value = getMap("world-settings." + worldName + "." + path, null);
+         return value.isEmpty() ? fallback : value;
      }
 +
 +    private void optimizationSettings() {

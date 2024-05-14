@@ -5,10 +5,10 @@ Subject: [PATCH] Gameplay Configuration
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-index 90d97f3e0500a38e64ec0b88b2cab6ef28640c10..859c2ac4e46b840f9552d1ccbf9409c9666e84de 100644
+index 94f16629b6c8a8be0df49f72744cf09e2ce94704..f0bd3753d3984d83c49d49e159dc7fc6ffb48bfd 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-@@ -212,4 +212,7 @@ public class KaiijuConfig {
+@@ -201,4 +201,7 @@ public class KaiijuConfig {
  
      private static void optimizationSettings() {
      }
@@ -17,10 +17,10 @@ index 90d97f3e0500a38e64ec0b88b2cab6ef28640c10..859c2ac4e46b840f9552d1ccbf9409c9
 +    }
  }
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index 6bd14857e0b0ef233f17f1a6e3e0fb313d59f641..05f9c01131e78927d88f1170c3eda4adf25ac8ba 100644
+index ffa090cf3f72ae7cf2b6352b2de38e152f032a60..2d5650889bea174605adbc98461a015a474e0801 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-@@ -146,4 +146,7 @@ public class KaiijuWorldConfig {
+@@ -125,4 +125,7 @@ public class KaiijuWorldConfig {
  
      private void optimizationSettings() {
      }

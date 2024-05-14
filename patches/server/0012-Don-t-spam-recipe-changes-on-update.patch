@@ -5,7 +5,7 @@ Subject: [PATCH] Don't spam recipe changes on update
 
 
 diff --git a/src/main/java/net/minecraft/server/PlayerAdvancements.java b/src/main/java/net/minecraft/server/PlayerAdvancements.java
-index f655e0ae4a287886d0291cd0089bad2000249d0f..285bb34b4ed45308292c5a23322f15b838552ac4 100644
+index c7e1f2bac3eca9bb72bf1f8c26cccb2905e1ddfc..40d6486fdd9a2953ade7c750eadb7ea1a116173d 100644
 --- a/src/main/java/net/minecraft/server/PlayerAdvancements.java
 +++ b/src/main/java/net/minecraft/server/PlayerAdvancements.java
 @@ -199,7 +199,7 @@ public class PlayerAdvancements {

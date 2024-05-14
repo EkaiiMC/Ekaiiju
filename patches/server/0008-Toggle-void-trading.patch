@@ -8,11 +8,11 @@ You should set chunk-unloads to 0s in paper config file to enable void
 trading. Or use Kaiivoid plugin.
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index f3f824d0ab1a2a72825c40b67192386479a0b34c..95ed6cb7b94797187d1011cab344e187b39d9193 100644
+index 2d5650889bea174605adbc98461a015a474e0801..37f6a0a2946f59be4c1d582f8c4fd696f3b5a11b 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-@@ -152,6 +152,9 @@ public class KaiijuWorldConfig {
-         shulkerBoxDropContentsWhenDestroyed = getBoolean("optimization.shulker-box-drop-contents-when-destroyed", shulkerBoxDropContentsWhenDestroyed);
+@@ -126,6 +126,9 @@ public class KaiijuWorldConfig {
+     private void optimizationSettings() {
      }
  
 +    public boolean fixVoidTrading = true;
@@ -22,15 +22,15 @@ index f3f824d0ab1a2a72825c40b67192386479a0b34c..95ed6cb7b94797187d1011cab344e187
      }
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index e7bd00b4b653cdd2793660cd2d6086e528019832..fd6f69f4b28775df660204238733ded880e17627 100644
+index b194f3448b5199e1204da31e1408f2e80803a77d..4f4331fb94b5bd4cc9d64d3bcd7eadeade0a5b5c 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -3068,7 +3068,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+@@ -3011,7 +3011,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
              // Spigot Start
              if (entity.getBukkitEntity() instanceof org.bukkit.inventory.InventoryHolder && (!(entity instanceof ServerPlayer) || entity.getRemovalReason() != Entity.RemovalReason.KILLED)) { // SPIGOT-6876: closeInventory clears death message
-                 // Paper start
+                 // Paper start - Fix merchant inventory not closing on entity removal
 -                if (entity.getBukkitEntity() instanceof org.bukkit.inventory.Merchant merchant && merchant.getTrader() != null) {
 +                if (entity.level().kaiijuConfig.fixVoidTrading && entity.getBukkitEntity() instanceof org.bukkit.inventory.Merchant merchant && merchant.getTrader() != null) { // Kaiiju
                      merchant.getTrader().closeInventory(org.bukkit.event.inventory.InventoryCloseEvent.Reason.UNLOADED);
                  }
-                 // Paper end
+                 // Paper end - Fix merchant inventory not closing on entity removal
