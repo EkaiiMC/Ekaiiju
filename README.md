@@ -1,7 +1,6 @@
-# Abomination - a WIP Folia/Kaiiju fork
+# Ekaiiju - a WIP Folia/Kaiiju fork
 
-WIP, ETA early February.
-I'm working on pretty aggresive patches, you can check out the experimental_entity_multithreading branch if you're interested in progress. The goal is to multithread as much as possible to put as many players in a region as possible.
+Forked from Abomination
 
 # ###################################
 
@@ -19,7 +18,7 @@ I'm working on pretty aggresive patches, you can check out the experimental_enti
 ## Features
 
 ### Notable
-- **Xymb Linear Format**: A Region file format that reduces disk space usage by about 50%.
+- **Xymb Linear Format**: A Region file format that reduces disk space usage by about 50%. (Not present ATM, coming later)
 - **Async Pathfinding**: Petal async pathfinding fixed & reworked.
 - **Technical Minecraft**: Enable Vanilla exploits such as sand duping, RNG manipulation...
 
