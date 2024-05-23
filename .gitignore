@@ -49,6 +49,7 @@ run/
 
 kaiiju-server
 kaiiju-api
+paper-api-generator
 
 *.sh
 kaiiju.jar
