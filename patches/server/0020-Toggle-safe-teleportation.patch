@@ -5,27 +5,26 @@ Subject: [PATCH] Toggle safe teleportation
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index 816db23fa64aab69e3034484c00645ebd0479978..7c6c74f95c2534624a928ccf6b0a4b9d2a5486ad 100644
+index 3f5ea4d83f65f6629eaae56aaabdcee6217f8cb6..4b74d756dc843a00c398f8fecb6bea09836b5d5d 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-@@ -161,10 +161,12 @@ public class KaiijuWorldConfig {
+@@ -133,9 +133,11 @@ public class KaiijuWorldConfig {
+ 
      public boolean fixVoidTrading = true;
      public boolean breakRedstoneOnTopOfTrapDoorsEarly = true;
-     public boolean fixTripWireStateInconsistency = true;
 +    public boolean safeTeleporting = true;
  
      private void gameplaySettings() {
          fixVoidTrading = getBoolean("gameplay.fix-void-trading", fixVoidTrading);
          breakRedstoneOnTopOfTrapDoorsEarly = getBoolean("gameplay.break-redstone-on-top-of-trap-doors-early", breakRedstoneOnTopOfTrapDoorsEarly);
-         fixTripWireStateInconsistency = getBoolean("gameplay.fix-tripwire-state-inconsistency", fixTripWireStateInconsistency);
 +        safeTeleporting = getBoolean("gameplay.safe-teleportation", safeTeleporting);
      }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index dd5ff2e6f0e3a9f183f4c0883bb530567990e0db..07b56c41bb1c1313eff491efa86cef6da6db049c 100644
+index 78e7cc9f6f4f9d6a7777bf38d4247047e9da851f..bb859648e9244c579900e14c5ae4d0515e64d938 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -4006,6 +4006,7 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {
+@@ -4112,6 +4112,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
  
      protected boolean tryEndPortal() {
          io.papermc.paper.util.TickThread.ensureTickThread(this, "Cannot portal entity async");
@@ -34,10 +33,10 @@ index dd5ff2e6f0e3a9f183f4c0883bb530567990e0db..07b56c41bb1c1313eff491efa86cef6d
          ServerLevel world = this.portalWorld;
          this.portalBlock = null;
 diff --git a/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java b/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java
-index 41d7cff39fc37955877668337689b4b26cd8c7cf..fe21ef0a2c451564694de915f6f4e61dbfeed712 100644
+index aeac09f628bd04070fd302842c304a7dfd39b229..856283d3e9d0cd269b9ebfa895ddf1b27c91fb0f 100644
 --- a/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java
-@@ -53,6 +53,13 @@ public class EndPortalBlock extends BaseEntityBlock {
+@@ -61,6 +61,13 @@ public class EndPortalBlock extends BaseEntityBlock {
                  // return; // CraftBukkit - always fire event in case plugins wish to change it
              }
  
