@@ -6,13 +6,14 @@ Subject: [PATCH] Experimental gameplay: Add option to disable OW/Nether 8:1
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-index cae27e176af0f4b639875721092cc598d19087ec..5b9d1b184d749f3370c7431bc1aacbe189e8a46f 100644
+index eda8546afab3215406c76e891729c4e6f4759673..11060f648142682207f5dc57ba7d31eb92b2ecf2 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-@@ -214,4 +214,10 @@ public class KaiijuConfig {
+@@ -211,4 +211,11 @@ public class KaiijuConfig {
+ 
      private static void gameplaySettings() {
-         serverModName = getString("gameplay.server-mod-name", serverModName);
      }
++
 +
 +    public static boolean disableOWNetherScale = false; // Changes 8:1 ratio between Nether and OW to 1:1
 +
@@ -21,10 +22,10 @@ index cae27e176af0f4b639875721092cc598d19087ec..5b9d1b184d749f3370c7431bc1aacbe1
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index d8be7c8dca41b6ad6d9a28590be9e33ef9045bdb..a4b41d98624acab4ecede80f3aa1db41b92efa0b 100644
+index fad6a7185e8e9ea160b47ec9da56d08af9df8396..b59823ddded258f33b96ac0e167fcc4468078860 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -4253,6 +4253,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -4258,6 +4258,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
  
                  WorldBorder destinationBorder = destination.getWorldBorder();
                  double dimensionScale = DimensionType.getTeleportationScale(origin.dimensionType(), destination.dimensionType());

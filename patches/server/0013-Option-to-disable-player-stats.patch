@@ -5,7 +5,7 @@ Subject: [PATCH] Option to disable player stats
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-index fb9e40c414b0428c1bd51730f78ed23a5e50f12e..4d97903e568cca1bfea55e400ae00aeb98cbf4dd 100644
+index 22a1a2fc8b8fb5fa0cf79f2d5d2c710fd4f71d26..09a69d2c3d1a441c4fc0145116d07508a704e153 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 @@ -200,9 +200,11 @@ public class KaiijuConfig {
@@ -19,12 +19,12 @@ index fb9e40c414b0428c1bd51730f78ed23a5e50f12e..4d97903e568cca1bfea55e400ae00aeb
 +        disablePlayerStats = getBoolean("optimization.disable-player-stats", disablePlayerStats);
      }
  
-     public static String serverModName = "Kaiiju";
+     private static void gameplaySettings() {
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index da87c4825c67e62ae238877f1fb3220f4c57f553..9dc840967d29bd7681cea468b7fde34aa6e791d1 100644
+index 8ee61c2415455f8d4ff1ae687753117a40eb687b..358507d234e6f83a9a8f84481bfbb9e45f251da2 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -2346,6 +2346,7 @@ public class ServerPlayer extends Player {
+@@ -2347,6 +2347,7 @@ public class ServerPlayer extends Player {
  
      @Override
      public void awardStat(Stat<?> stat, int amount) {

@@ -5,10 +5,10 @@ Subject: [PATCH] Vanilla end portal teleportation
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index a4b41d98624acab4ecede80f3aa1db41b92efa0b..78e7cc9f6f4f9d6a7777bf38d4247047e9da851f 100644
+index b59823ddded258f33b96ac0e167fcc4468078860..9f68450cedd4ba3a5fcd65319a0a8824249047cf 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -4197,12 +4197,17 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -4202,12 +4202,17 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
                          targetPos, 16, // load 16 blocks to be safe from block physics
                          ca.spottedleaf.concurrentutil.executor.standard.PrioritisedExecutor.Priority.HIGH,
                          (chunks) -> {
@@ -28,7 +28,7 @@ index a4b41d98624acab4ecede80f3aa1db41b92efa0b..78e7cc9f6f4f9d6a7777bf38d4247047
                              );
                          }
                      );
-@@ -4390,6 +4395,10 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -4395,6 +4400,10 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
          if (!this.canPortalAsync(takePassengers)) {
              return false;
          }
@@ -39,7 +39,7 @@ index a4b41d98624acab4ecede80f3aa1db41b92efa0b..78e7cc9f6f4f9d6a7777bf38d4247047
  
          Vec3 initialPosition = this.position();
          ChunkPos initialPositionChunk = new ChunkPos(
-@@ -4448,7 +4457,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -4453,7 +4462,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
              // place
              passengerTree.root.placeInAsync(
                  originWorld, destination, Entity.TELEPORT_FLAG_LOAD_CHUNK | (takePassengers ? Entity.TELEPORT_FLAG_TELEPORT_PASSENGERS : 0L),

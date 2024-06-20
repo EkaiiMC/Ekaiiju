@@ -5,7 +5,7 @@ Subject: [PATCH] Toggle safe teleportation
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index 3f5ea4d83f65f6629eaae56aaabdcee6217f8cb6..4b74d756dc843a00c398f8fecb6bea09836b5d5d 100644
+index a4170d2f75a259926576d7598fd552e4567a6346..3f7aa3aa4b5c5b330243338cdde6306756e83fba 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 @@ -133,9 +133,11 @@ public class KaiijuWorldConfig {
@@ -21,10 +21,10 @@ index 3f5ea4d83f65f6629eaae56aaabdcee6217f8cb6..4b74d756dc843a00c398f8fecb6bea09
      }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 78e7cc9f6f4f9d6a7777bf38d4247047e9da851f..bb859648e9244c579900e14c5ae4d0515e64d938 100644
+index 9f68450cedd4ba3a5fcd65319a0a8824249047cf..971651b16110014cd26e864a5feacbcb51d5571c 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -4112,6 +4112,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -4117,6 +4117,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
  
      protected boolean tryEndPortal() {
          io.papermc.paper.util.TickThread.ensureTickThread(this, "Cannot portal entity async");

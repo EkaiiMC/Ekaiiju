@@ -5,27 +5,38 @@ Subject: [PATCH] Rebranding
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index b1d621ed91c74790fd5b66339c044ec444de62ef..35414701780d6ca24a2c2772a1b7cb6322bb075b 100644
+index eb2f9941b24af591f1e56339b97f5284a765cf81..a4ff59979fa99d1d8f4b44686c0420b467eb4a65 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -13,7 +13,7 @@ val alsoShade: Configuration by configurations.creating
+@@ -13,7 +13,7 @@ configurations.named(log4jPlugins.compileClasspathConfigurationName) {
+ val alsoShade: Configuration by configurations.creating
  
  dependencies {
-     // Folia start
--    implementation(project(":folia-api"))
+-    implementation(project(":folia-api")) // Folia
 +    implementation(project(":kaiiju-api")) // Kaiiju
-     implementation("io.papermc.paper:paper-mojangapi:${project.version}") {
-         exclude("io.papermc.paper", "paper-api")
-     }
-@@ -83,7 +83,7 @@ tasks.jar {
+     // Paper start
+     implementation("org.jline:jline-terminal-jansi:3.21.0")
+     implementation("net.minecrell:terminalconsoleappender:1.3.0")
+@@ -80,14 +80,14 @@ tasks.jar {
+         val gitBranch = git("rev-parse", "--abbrev-ref", "HEAD").getText().trim() // Paper
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
-             "Implementation-Title" to "CraftBukkit",
--            "Implementation-Version" to "git-Folia-$implementationVersion", // Folia
-+            "Implementation-Version" to "git-Kaiiju-$implementationVersion", // Folia // Kaiiju
+-            "Implementation-Title" to "Folia", // Folia
+-            "Implementation-Version" to implementationVersion,
++            "Implementation-Title" to "Ekaiiju", // Folia // Kaiiju // Ekaiiju
++            "Implementation-Version" to "git-Ekaiiju-$implementationVersion", // Folia // Kaiiju // Ekaiiju
              "Implementation-Vendor" to date, // Paper
-             "Specification-Title" to "Bukkit",
+-            "Specification-Title" to "Folia", // Folia
++            "Specification-Title" to "Ekaiiju", // Folia // Kaiiju // Ekaiiju
              "Specification-Version" to project.version,
+             "Specification-Vendor" to "Paper Team",
+-            "Brand-Id" to "papermc:folia", // Folia
+-            "Brand-Name" to "Folia", // Folia
++            "Brand-Id" to "ekaiimc:ekaiiju", // Folia // Kaiiju // Ekaiiju
++            "Brand-Name" to "Ekaiiju", // Folia // Kaiiju // Ekaiiju
+             "Build-Number" to (build ?: ""),
+             "Build-Time" to Instant.now().toString(),
+             "Git-Branch" to gitBranch, // Paper
 diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
 index cb60d58d4a7556dd896f31d0cd249f860bb3ef84..6b92c4941e8dbcb1adedd2c8e7a457922df5936f 100644
 --- a/src/main/java/com/destroystokyo/paper/Metrics.java
@@ -49,63 +60,41 @@ index cb60d58d4a7556dd896f31d0cd249f860bb3ef84..6b92c4941e8dbcb1adedd2c8e7a45792
                  metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
                      Map<String, Map<String, Integer>> map = new HashMap<>();
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-index e2f704c115fd6e00960bb56bb0779f1100c89c17..d06b28458c98619de8545d4917da2771375d2b0b 100644
+index 29bd788ae8bc61c1e62a4f84b9e259931a7041ce..7f8c61d13c5f02074002e2b6af2b3ac7a62efaf9 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-@@ -20,7 +20,10 @@ import java.util.stream.StreamSupport;
- public class PaperVersionFetcher implements VersionFetcher {
-     private static final java.util.regex.Pattern VER_PATTERN = java.util.regex.Pattern.compile("^([0-9\\.]*)\\-.*R"); // R is an anchor, will always give '-R' at end
-     private static final String GITHUB_BRANCH_NAME = "master";
+@@ -35,7 +35,10 @@ public class PaperVersionFetcher implements VersionFetcher {
+     private static final Logger LOGGER = LogUtils.getClassLogger();
+     private static final int DISTANCE_ERROR = -1;
+     private static final int DISTANCE_UNKNOWN = -2;
 -    private static final String DOWNLOAD_PAGE = "https://papermc.io/downloads/paper";
 +    // Kaiiju start
-+    private static final String DOWNLOAD_PAGE = "https://github.com/KaiijuMC/Kaiiju/releases";
++    private static final String DOWNLOAD_PAGE = "https://github.com/EkaiiMC/Ekaiiju/releases";
 +    private static int distance = -2; public int distance() { return distance; }
 +    // Kaiiju end
-     private static @Nullable String mcVer;
  
      @Override
-@@ -31,8 +34,8 @@ public class PaperVersionFetcher implements VersionFetcher {
-     @Nonnull
-     @Override
-     public Component getVersionMessage(@Nonnull String serverVersion) {
--        String[] parts = serverVersion.substring("git-Folia-".length()).split("[-\\s]"); // Folia
--        final Component updateMessage = getUpdateStatusMessage("PaperMC/Folia", GITHUB_BRANCH_NAME, parts[0]); // Folia
-+        String[] parts = serverVersion.substring("git-Kaiiju-".length()).split("[-\\s]"); // Folia // Kaiiju
-+        final Component updateMessage = getUpdateStatusMessage("KaiijuMC/Kaiiju", "ver/" + getMinecraftVersion(), parts[0]); // Folia // Kaiiju
-         final Component history = getHistory();
- 
-         return history != null ? TextComponent.ofChildren(updateMessage, Component.newline(), history) : updateMessage;
-@@ -45,7 +48,7 @@ public class PaperVersionFetcher implements VersionFetcher {
-                 String result = matcher.group();
-                 mcVer = result.substring(0, result.length() - 2); // strip 'R' anchor and trailing '-'
-             } else {
--                org.bukkit.Bukkit.getLogger().warning("Unable to match version to pattern! Report to PaperMC!");
-+                org.bukkit.Bukkit.getLogger().warning("Unable to match version to pattern! Report to KaiijuMC!"); // Kaiiju
-                 org.bukkit.Bukkit.getLogger().warning("Pattern: " + VER_PATTERN.toString());
-                 org.bukkit.Bukkit.getLogger().warning("Version: " + org.bukkit.Bukkit.getBukkitVersion());
-             }
-@@ -56,6 +59,7 @@ public class PaperVersionFetcher implements VersionFetcher {
- 
-     private static Component getUpdateStatusMessage(@Nonnull String repo, @Nonnull String branch, @Nonnull String versionInfo) {
-         int distance;
-+        /* // Kaiiju - disable jenkins/api checking
-         try {
-             int jenkinsBuild = Integer.parseInt(versionInfo);
-             distance = fetchDistanceFromSiteApi(jenkinsBuild, getMinecraftVersion());
-@@ -63,6 +67,11 @@ public class PaperVersionFetcher implements VersionFetcher {
-             versionInfo = versionInfo.replace("\"", "");
-             distance = fetchDistanceFromGitHub(repo, branch, versionInfo);
+     public long getCacheTime() {
+@@ -49,7 +52,7 @@ public class PaperVersionFetcher implements VersionFetcher {
+         if (build.buildNumber().isEmpty() && build.gitCommit().isEmpty()) {
+             updateMessage = text("You are running a development version without access to version information", color(0xFF5300));
+         } else {
+-            updateMessage = getUpdateStatusMessage("PaperMC/Folia", build); // Folia
++            updateMessage = getUpdateStatusMessage("EkaiiMC/Ekaiiju", build); // Folia // Kaiiju - Ekaiiju
          }
-+        // Kaiiju start - disable jenkins/api checking
-+        */
-+        versionInfo = versionInfo.replace("\"", "");
-+        distance = fetchDistanceFromGitHub(repo, branch, versionInfo);
-+        // Kaiiju end
+         final @Nullable Component history = this.getHistory();
  
-         switch (distance) {
-             case -1:
+@@ -57,8 +60,6 @@ public class PaperVersionFetcher implements VersionFetcher {
+     }
+ 
+     private static Component getUpdateStatusMessage(final String repo, final ServerBuildInfo build) {
+-        int distance = DISTANCE_ERROR;
+-
+         final OptionalInt buildNumber = build.buildNumber();
+         if (buildNumber.isPresent()) {
+             distance = fetchDistanceFromSiteApi(build, buildNumber.getAsInt());
 diff --git a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
-index c5d5648f4ca603ef2b1df723b58f9caf4dd3c722..1c7b5d91e914efbcfb50c6137c7760787e38ad94 100644
+index c5d5648f4ca603ef2b1df723b58f9caf4dd3c722..54ab8a1a27ca298b104d4f3bd5d60b16340c4a3c 100644
 --- a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
 +++ b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
 @@ -17,7 +17,7 @@ public final class PaperConsole extends SimpleTerminalConsole {
@@ -113,7 +102,7 @@ index c5d5648f4ca603ef2b1df723b58f9caf4dd3c722..1c7b5d91e914efbcfb50c6137c776078
      protected LineReader buildReader(LineReaderBuilder builder) {
          builder
 -                .appName("Paper")
-+                .appName("Kaiiju") // Kaiiju
++                .appName("Kaiiju")
                  .variable(LineReader.HISTORY_FILE, java.nio.file.Paths.get(".console_history"))
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
@@ -131,10 +120,10 @@ index 4f3cc14d48690bb183d09bb7a5ba1e23e8a0c08a..58f516100fe919a19ad8be341eccbdc4
          stringbuilder.append(CrashReport.DATE_TIME_FORMATTER.format(ZonedDateTime.now()));
          stringbuilder.append("\n");
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 49a121862fbb823a00753d99d24d04c87479fcd1..8c59d02198541e5e37fc12bbb90841a921398519 100644
+index 355c8408da189a4805e206db0932c41f940930f0..ff1fb452d29f8dd7925d30541c857eaebd223bfd 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1029,7 +1029,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1025,7 +1025,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          shutdownThread = Thread.currentThread();
          org.spigotmc.WatchdogThread.doStop(); // Paper
          if (false && !isSameThread()) { // Folia - region threading
@@ -143,15 +132,6 @@ index 49a121862fbb823a00753d99d24d04c87479fcd1..8c59d02198541e5e37fc12bbb90841a9
              while (this.getRunningThread().isAlive()) {
                  this.getRunningThread().stop();
                  try {
-@@ -2020,7 +2020,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
- 
-     @DontObfuscate
-     public String getServerModName() {
--        return "Folia"; // Paper // Folia - Folia
-+        return "Kaiiju"; // Paper // Folia - Folia // Kaiiju - Kaiiju
-     }
- 
-     public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
 index b00e3b9b628f3d2a2fdbf1d2c77904963c16d3ac..aebc83a34b33cf7d03c34cb8009dc2d0d8af2a8d 100644
 --- a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java

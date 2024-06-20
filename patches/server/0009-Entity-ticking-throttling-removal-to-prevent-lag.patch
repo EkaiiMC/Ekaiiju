@@ -5,13 +5,13 @@ Subject: [PATCH] Entity ticking throttling & removal to prevent lag.
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 35414701780d6ca24a2c2772a1b7cb6322bb075b..cfb4dee9255da9a141a9230c22d6af53640d9b6c 100644
+index ed2a0c65835c4b6e8591a908a3d4e2969c6e1319..703ef4e3feec9059e078882e8801d9a217344d19 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -18,6 +18,7 @@ dependencies {
-         exclude("io.papermc.paper", "paper-api")
-     }
-     // Folia end
+@@ -14,6 +14,7 @@ val alsoShade: Configuration by configurations.creating
+ 
+ dependencies {
+     implementation(project(":kaiiju-api")) // Kaiiju
 +    implementation("io.github.classgraph:classgraph:4.8.158") // Kaiiju - Entity throttling & Removal
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.21.0")
@@ -163,7 +163,7 @@ index 0000000000000000000000000000000000000000..887ea85ca2a03796bfa5bf62f27d1a7a
 +}
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuEntityThrottler.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuEntityThrottler.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..311b2b24b99d21d28efe048adb9dc8eb993c4564
+index 0000000000000000000000000000000000000000..eb690efacf083e4ff3e321578b12c534e6a40196
 --- /dev/null
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuEntityThrottler.java
 @@ -0,0 +1,84 @@
@@ -251,9 +251,8 @@ index 0000000000000000000000000000000000000000..311b2b24b99d21d28efe048adb9dc8eb
 +        }
 +    }
 +}
-\ No newline at end of file
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index f5ff7806b21bda96b74c20a96a1dcb6e0e9a5dad..21b7b17606910a67c0a6884abeae235278f871bf 100644
+index f5ff7806b21bda96b74c20a96a1dcb6e0e9a5dad..2ee7f2e2a2fd4465269e3c2374b84148d07d961a 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 @@ -123,7 +123,10 @@ public class KaiijuWorldConfig {
@@ -263,7 +262,7 @@ index f5ff7806b21bda96b74c20a96a1dcb6e0e9a5dad..21b7b17606910a67c0a6884abeae2352
 +    public boolean enableEntityThrottling = false;
 +
      private void optimizationSettings() {
-+        enableEntityThrottling = getBoolean("optimization.enable-entity-throttling", enableEntityThrottling);
++      enableEntityThrottling = getBoolean("optimization.enable-entity-throttling", enableEntityThrottling);
      }
  
      public boolean fixVoidTrading = true;
@@ -288,7 +287,7 @@ index 202a6d9ef9116706493f0b0f3569638b146641da..229dcd1b3f25456c259d8e9101709a7f
                  level.kaiijuConfig.reload();
              }
 diff --git a/src/main/java/io/papermc/paper/threadedregions/RegionizedWorldData.java b/src/main/java/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index 245efed41de40dc506301af942a7f3c3a2b60d65..556930b5a2e26f481ce5c3b82eac6b50f7e674c5 100644
+index 0180d319f1d79ee48ac71afe7f27472bd947bb4b..21da13516500c8abbeaf4e5ba36ee38e631d2052 100644
 --- a/src/main/java/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/src/main/java/io/papermc/paper/threadedregions/RegionizedWorldData.java
 @@ -334,6 +334,7 @@ public final class RegionizedWorldData {
@@ -300,7 +299,7 @@ index 245efed41de40dc506301af942a7f3c3a2b60d65..556930b5a2e26f481ce5c3b82eac6b50
      // block ticking
      private final ObjectLinkedOpenHashSet<BlockEventData> blockEvents = new ObjectLinkedOpenHashSet<>();
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index c31498685794249b369474086cabd91fce2c456b..f4fc3ae3992550fe42b3c2227ecce87cd7b6d739 100644
+index 4a652e65804a67a70d283b16e7224864398e6ee7..22e7b6f6dfcdc0b5fba24105fb1a7efbec2f91ca 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -239,6 +239,12 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
@@ -351,10 +350,10 @@ index 4f4331fb94b5bd4cc9d64d3bcd7eadeade0a5b5c..c73138ffd8613337b5823fcfda957c76
              this.timings.tickEntities.stopTiming(); // Spigot
              gameprofilerfiller.pop();
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 7d93a985dd18eefc0ca6a8b74d1566d88a6e08d4..51ac70f38fbdeed7a60a0e557c13416d2f369cea 100644
+index 1925109b2eb53fb65a5554eb82c021f06ed63bf6..85929a947ede7540386ddb44561cd20dafcb5773 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
-@@ -181,6 +181,11 @@ public class Main {
+@@ -182,6 +182,11 @@ public class Main {
                      .ofType(File.class)
                      .defaultsTo(new File("kaiiju.yml"))
                      .describedAs("Yml file");

@@ -5,7 +5,7 @@ Subject: [PATCH] Option to disable arm swing event
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-index 4d97903e568cca1bfea55e400ae00aeb98cbf4dd..cae27e176af0f4b639875721092cc598d19087ec 100644
+index 09a69d2c3d1a441c4fc0145116d07508a704e153..eda8546afab3215406c76e891729c4e6f4759673 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 @@ -201,10 +201,12 @@ public class KaiijuConfig {
@@ -20,12 +20,12 @@ index 4d97903e568cca1bfea55e400ae00aeb98cbf4dd..cae27e176af0f4b639875721092cc598
 +        disableArmSwingEvent = getBoolean("optimization.disable-arm-swing-event", disableArmSwingEvent);
      }
  
-     public static String serverModName = "Kaiiju";
+     private static void gameplaySettings() {
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 29e2a74dfbece35cd4b5c4f6476848664b046221..ad79ec7c05ad0974ddeef2a4541544a247d0656e 100644
+index 2ae2527bbe5a08af98eb6405a8403c2199052f19..28349ba13969d5fd85b76da51ec8f92098f14a28 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2615,6 +2615,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2602,6 +2602,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          PacketUtils.ensureRunningOnSameThread(packet, this, this.player.serverLevel());
          if (this.player.isImmobile()) return; // CraftBukkit
          this.player.resetLastActionTime();
@@ -33,7 +33,7 @@ index 29e2a74dfbece35cd4b5c4f6476848664b046221..ad79ec7c05ad0974ddeef2a4541544a2
          // CraftBukkit start - Raytrace to look for 'rogue armswings'
          float f1 = this.player.getXRot();
          float f2 = this.player.getYRot();
-@@ -2647,6 +2648,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2634,6 +2635,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
  
          if (event.isCancelled()) return;
          // CraftBukkit end

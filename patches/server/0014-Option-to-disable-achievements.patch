@@ -5,7 +5,7 @@ Subject: [PATCH] Option to disable achievements
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index 21b7b17606910a67c0a6884abeae235278f871bf..3f5ea4d83f65f6629eaae56aaabdcee6217f8cb6 100644
+index 2ee7f2e2a2fd4465269e3c2374b84148d07d961a..a4170d2f75a259926576d7598fd552e4567a6346 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 @@ -124,9 +124,11 @@ public class KaiijuWorldConfig {
@@ -15,16 +15,16 @@ index 21b7b17606910a67c0a6884abeae235278f871bf..3f5ea4d83f65f6629eaae56aaabdcee6
 +    public boolean disableAchievements = false;
  
      private void optimizationSettings() {
-         enableEntityThrottling = getBoolean("optimization.enable-entity-throttling", enableEntityThrottling);
+       enableEntityThrottling = getBoolean("optimization.enable-entity-throttling", enableEntityThrottling);
 +        disableAchievements = getBoolean("optimization.disable-achievements", disableAchievements);
      }
  
      public boolean fixVoidTrading = true;
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1476bb63f 100644
+index 358507d234e6f83a9a8f84481bfbb9e45f251da2..35149ce48ff75afd56f4952f1cb12b53c3093a9b 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -857,7 +857,7 @@ public class ServerPlayer extends Player {
+@@ -858,7 +858,7 @@ public class ServerPlayer extends Player {
  
      @Override
      protected void onInsideBlock(BlockState state) {
@@ -33,7 +33,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
      }
  
      @Override
-@@ -904,9 +904,9 @@ public class ServerPlayer extends Player {
+@@ -905,9 +905,9 @@ public class ServerPlayer extends Player {
              }
          }
  
@@ -45,7 +45,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
          }
  
          this.trackStartFallingPosition();
-@@ -1005,7 +1005,7 @@ public class ServerPlayer extends Player {
+@@ -1006,7 +1006,7 @@ public class ServerPlayer extends Player {
              }
  
              if (this.tickCount % 20 == 0) {
@@ -54,7 +54,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
              }
  
              // CraftBukkit start - initialize oldLevel, fire PlayerLevelChangeEvent, and tick client-sided world border
-@@ -1034,7 +1034,7 @@ public class ServerPlayer extends Player {
+@@ -1035,7 +1035,7 @@ public class ServerPlayer extends Player {
      @Override
      public void resetFallDistance() {
          if (this.getHealth() > 0.0F && this.startingToFallPosition != null) {
@@ -63,7 +63,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
          }
  
          this.startingToFallPosition = null;
-@@ -1056,7 +1056,7 @@ public class ServerPlayer extends Player {
+@@ -1057,7 +1057,7 @@ public class ServerPlayer extends Player {
              if (this.enteredLavaOnVehiclePosition == null) {
                  this.enteredLavaOnVehiclePosition = this.position();
              } else {
@@ -72,7 +72,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
              }
          }
  
-@@ -1256,7 +1256,7 @@ public class ServerPlayer extends Player {
+@@ -1257,7 +1257,7 @@ public class ServerPlayer extends Player {
  
              this.handleTeamKill(this, entityKilled, ObjectiveCriteria.TEAM_KILL);
              this.handleTeamKill(entityKilled, this, ObjectiveCriteria.KILLED_BY_TEAM);
@@ -81,7 +81,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
          }
      }
  
-@@ -1374,7 +1374,7 @@ public class ServerPlayer extends Player {
+@@ -1375,7 +1375,7 @@ public class ServerPlayer extends Player {
          this.wonGame = false;
  
          this.respawn((player) -> {
@@ -90,7 +90,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
          }, true);
      }
  
-@@ -1868,14 +1868,14 @@ public class ServerPlayer extends Player {
+@@ -1869,14 +1869,14 @@ public class ServerPlayer extends Player {
              maindimensionkey1 = resourcekey1;
          }
          // Paper end - Add option for strict advancement dimension checks
@@ -108,7 +108,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
          }
  
          if (maindimensionkey1 != Level.NETHER) { // CraftBukkit
-@@ -1953,7 +1953,7 @@ public class ServerPlayer extends Player {
+@@ -1954,7 +1954,7 @@ public class ServerPlayer extends Player {
                  {
                      Either<Player.BedSleepingProblem, Unit> either = super.startSleepInBed(blockposition, force).ifRight((unit) -> {
                          this.awardStat(Stats.SLEEP_IN_BED);
@@ -117,7 +117,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
                      });
  
                      if (!this.serverLevel().canSleepThroughNights()) {
-@@ -2366,7 +2366,7 @@ public class ServerPlayer extends Player {
+@@ -2367,7 +2367,7 @@ public class ServerPlayer extends Player {
  
      @Override
      public void triggerRecipeCrafted(RecipeHolder<?> recipe, List<ItemStack> ingredients) {
@@ -126,7 +126,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
      }
  
      @Override
-@@ -2487,14 +2487,14 @@ public class ServerPlayer extends Player {
+@@ -2488,14 +2488,14 @@ public class ServerPlayer extends Player {
              this.levitationStartPos = this.position();
          }
  
@@ -143,7 +143,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
      }
  
      @Override
-@@ -2505,7 +2505,7 @@ public class ServerPlayer extends Player {
+@@ -2506,7 +2506,7 @@ public class ServerPlayer extends Player {
              this.levitationStartPos = null;
          }
  
@@ -152,7 +152,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
      }
  
      @Override
-@@ -3056,7 +3056,7 @@ public class ServerPlayer extends Player {
+@@ -3057,7 +3057,7 @@ public class ServerPlayer extends Player {
  
      @Override
      protected void updateUsingItem(ItemStack stack) {
@@ -161,7 +161,7 @@ index 9dc840967d29bd7681cea468b7fde34aa6e791d1..9125cf649f47b716dbfc98be0f955db1
          super.updateUsingItem(stack);
      }
  
-@@ -3089,7 +3089,7 @@ public class ServerPlayer extends Player {
+@@ -3090,7 +3090,7 @@ public class ServerPlayer extends Player {
          Entity entity = item.getOwner();
  
          if (entity != null) {

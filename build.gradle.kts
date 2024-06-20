@@ -3,8 +3,8 @@ import io.papermc.paperweight.util.constants.*
 
 plugins {
     java
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("io.papermc.paperweight.patcher") version "1.6.3"
+    id("io.github.goooler.shadow") version "8.1.7"
+    id("io.papermc.paperweight.patcher") version "1.7.1"
 }
 
 allprojects {
@@ -91,7 +91,7 @@ tasks.register("foliaRefLatest") {
         )
 
         val foliaLatestCommitJson = layout.cache.resolve("foliaLatestCommit.json");
-        download.get().download("https://api.github.com/repos/PaperMC/Folia/commits/dev/1.20.6", foliaLatestCommitJson);
+        download.get().download("https://api.github.com/repos/PaperMC/Folia/commits/master", foliaLatestCommitJson);
         val foliaLatestCommit = gson.fromJson<paper.libs.com.google.gson.JsonObject>(foliaLatestCommitJson)["sha"].asString;
 
         copy {

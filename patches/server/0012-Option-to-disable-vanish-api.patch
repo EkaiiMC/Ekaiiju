@@ -5,7 +5,7 @@ Subject: [PATCH] Option to disable vanish api
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-index e746cf96a02c7b15bf448e77b297f85d61743d97..fb9e40c414b0428c1bd51730f78ed23a5e50f12e 100644
+index f0bd3753d3984d83c49d49e159dc7fc6ffb48bfd..22a1a2fc8b8fb5fa0cf79f2d5d2c710fd4f71d26 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 @@ -199,7 +199,10 @@ public class KaiijuConfig {
@@ -18,7 +18,7 @@ index e746cf96a02c7b15bf448e77b297f85d61743d97..fb9e40c414b0428c1bd51730f78ed23a
 +        disableVanishApi = getBoolean("optimization.disable-vanish-api", disableVanishApi);
      }
  
-     public static String serverModName = "Kaiiju";
+     private static void gameplaySettings() {
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
 index c547d51eebd965f2be7ac45bc0981626c0515ef1..72b0118f349dd2300235bcacfbf12deba7ec367a 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
