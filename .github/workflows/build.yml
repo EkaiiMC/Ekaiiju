@@ -1,8 +1,8 @@
 name: Generate Jars
 on: [ push, pull_request ]
 env:
-  version: '1.20.1'
-  branch: ver/1.20.1
+  version: '1.20.6'
+  branch: master
 jobs:
   paperclip:
     runs-on: ubuntu-latest
@@ -12,7 +12,7 @@ jobs:
       - name: Set up JDK
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '17'
+          java-version: '21'
           cache: 'gradle'
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
