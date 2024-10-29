@@ -25,7 +25,7 @@ jobs:
       - name: Build Paperclip jar
         run: ./gradlew createReobfPaperclipJar --stacktrace
       - name: Upload Paperclip jar
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: kaiiju.jar
           path: build/libs/kaiiju-paperclip-*-reobf.jar
