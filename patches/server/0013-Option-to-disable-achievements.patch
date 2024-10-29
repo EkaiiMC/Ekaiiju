@@ -5,7 +5,7 @@ Subject: [PATCH] Option to disable achievements
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index 2ee7f2e2a2fd4465269e3c2374b84148d07d961a..a4170d2f75a259926576d7598fd552e4567a6346 100644
+index ae1dc5b0fdd44535466d5d0a7d6416873d389f0a..484ccbb68375287f1304844ec0461d8054991117 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 @@ -124,9 +124,11 @@ public class KaiijuWorldConfig {
@@ -15,25 +15,25 @@ index 2ee7f2e2a2fd4465269e3c2374b84148d07d961a..a4170d2f75a259926576d7598fd552e4
 +    public boolean disableAchievements = false;
  
      private void optimizationSettings() {
-       enableEntityThrottling = getBoolean("optimization.enable-entity-throttling", enableEntityThrottling);
+         enableEntityThrottling = getBoolean("optimization.enable-entity-throttling", enableEntityThrottling);
 +        disableAchievements = getBoolean("optimization.disable-achievements", disableAchievements);
      }
  
      public boolean fixVoidTrading = true;
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 358507d234e6f83a9a8f84481bfbb9e45f251da2..35149ce48ff75afd56f4952f1cb12b53c3093a9b 100644
+index aa6e7e03697023c2c755e0ce119e76e9d708e5d1..79f70c9b6f35aa286f44294f37e6eb257b9f169f 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -858,7 +858,7 @@ public class ServerPlayer extends Player {
+@@ -894,7 +894,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
  
      @Override
-     protected void onInsideBlock(BlockState state) {
+     public void onInsideBlock(BlockState state) {
 -        CriteriaTriggers.ENTER_BLOCK.trigger(this, state);
 +        if (!this.level().kaiijuConfig.disableAchievements) CriteriaTriggers.ENTER_BLOCK.trigger(this, state); // Kaiiju
      }
  
      @Override
-@@ -905,9 +905,9 @@ public class ServerPlayer extends Player {
+@@ -941,9 +941,9 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
              }
          }
  
@@ -45,7 +45,7 @@ index 358507d234e6f83a9a8f84481bfbb9e45f251da2..35149ce48ff75afd56f4952f1cb12b53
          }
  
          this.trackStartFallingPosition();
-@@ -1006,7 +1006,7 @@ public class ServerPlayer extends Player {
+@@ -1042,7 +1042,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
              }
  
              if (this.tickCount % 20 == 0) {
@@ -54,7 +54,7 @@ index 358507d234e6f83a9a8f84481bfbb9e45f251da2..35149ce48ff75afd56f4952f1cb12b53
              }
  
              // CraftBukkit start - initialize oldLevel, fire PlayerLevelChangeEvent, and tick client-sided world border
-@@ -1035,7 +1035,7 @@ public class ServerPlayer extends Player {
+@@ -1071,7 +1071,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
      @Override
      public void resetFallDistance() {
          if (this.getHealth() > 0.0F && this.startingToFallPosition != null) {
@@ -63,7 +63,7 @@ index 358507d234e6f83a9a8f84481bfbb9e45f251da2..35149ce48ff75afd56f4952f1cb12b53
          }
  
          this.startingToFallPosition = null;
-@@ -1057,7 +1057,7 @@ public class ServerPlayer extends Player {
+@@ -1093,7 +1093,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
              if (this.enteredLavaOnVehiclePosition == null) {
                  this.enteredLavaOnVehiclePosition = this.position();
              } else {
@@ -72,7 +72,7 @@ index 358507d234e6f83a9a8f84481bfbb9e45f251da2..35149ce48ff75afd56f4952f1cb12b53
              }
          }
  
-@@ -1257,7 +1257,7 @@ public class ServerPlayer extends Player {
+@@ -1295,7 +1295,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
  
              this.handleTeamKill(this, entityKilled, ObjectiveCriteria.TEAM_KILL);
              this.handleTeamKill(entityKilled, this, ObjectiveCriteria.KILLED_BY_TEAM);
@@ -81,16 +81,16 @@ index 358507d234e6f83a9a8f84481bfbb9e45f251da2..35149ce48ff75afd56f4952f1cb12b53
          }
      }
  
-@@ -1375,7 +1375,7 @@ public class ServerPlayer extends Player {
+@@ -1494,7 +1494,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
          this.wonGame = false;
  
          this.respawn((player) -> {
 -            CriteriaTriggers.CHANGED_DIMENSION.trigger(player, Level.END, Level.OVERWORLD);
 +            if (!this.level().kaiijuConfig.disableAchievements) CriteriaTriggers.CHANGED_DIMENSION.trigger(player, Level.END, Level.OVERWORLD); // Kaiiju
-         }, true);
+         }, org.bukkit.event.player.PlayerRespawnEvent.RespawnReason.END_PORTAL, true);
      }
  
-@@ -1869,14 +1869,14 @@ public class ServerPlayer extends Player {
+@@ -1930,14 +1930,14 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
              maindimensionkey1 = resourcekey1;
          }
          // Paper end - Add option for strict advancement dimension checks
@@ -108,16 +108,16 @@ index 358507d234e6f83a9a8f84481bfbb9e45f251da2..35149ce48ff75afd56f4952f1cb12b53
          }
  
          if (maindimensionkey1 != Level.NETHER) { // CraftBukkit
-@@ -1954,7 +1954,7 @@ public class ServerPlayer extends Player {
+@@ -2015,7 +2015,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
                  {
-                     Either<Player.BedSleepingProblem, Unit> either = super.startSleepInBed(blockposition, force).ifRight((unit) -> {
+                     Either<net.minecraft.world.entity.player.Player.BedSleepingProblem, Unit> either = super.startSleepInBed(blockposition, force).ifRight((unit) -> {
                          this.awardStat(Stats.SLEEP_IN_BED);
 -                        CriteriaTriggers.SLEPT_IN_BED.trigger(this);
 +                        if (!this.level().kaiijuConfig.disableAchievements) CriteriaTriggers.SLEPT_IN_BED.trigger(this); // Kaiiju
                      });
  
                      if (!this.serverLevel().canSleepThroughNights()) {
-@@ -2367,7 +2367,7 @@ public class ServerPlayer extends Player {
+@@ -2434,7 +2434,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
  
      @Override
      public void triggerRecipeCrafted(RecipeHolder<?> recipe, List<ItemStack> ingredients) {
@@ -126,7 +126,7 @@ index 358507d234e6f83a9a8f84481bfbb9e45f251da2..35149ce48ff75afd56f4952f1cb12b53
      }
  
      @Override
-@@ -2488,14 +2488,14 @@ public class ServerPlayer extends Player {
+@@ -2565,14 +2565,14 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
              this.levitationStartPos = this.position();
          }
  
@@ -143,7 +143,7 @@ index 358507d234e6f83a9a8f84481bfbb9e45f251da2..35149ce48ff75afd56f4952f1cb12b53
      }
  
      @Override
-@@ -2506,7 +2506,7 @@ public class ServerPlayer extends Player {
+@@ -2583,7 +2583,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
              this.levitationStartPos = null;
          }
  
@@ -152,7 +152,7 @@ index 358507d234e6f83a9a8f84481bfbb9e45f251da2..35149ce48ff75afd56f4952f1cb12b53
      }
  
      @Override
-@@ -3057,7 +3057,7 @@ public class ServerPlayer extends Player {
+@@ -3136,7 +3136,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
  
      @Override
      protected void updateUsingItem(ItemStack stack) {
@@ -161,7 +161,7 @@ index 358507d234e6f83a9a8f84481bfbb9e45f251da2..35149ce48ff75afd56f4952f1cb12b53
          super.updateUsingItem(stack);
      }
  
-@@ -3090,7 +3090,7 @@ public class ServerPlayer extends Player {
+@@ -3169,7 +3169,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
          Entity entity = item.getOwner();
  
          if (entity != null) {

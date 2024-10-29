@@ -8,7 +8,7 @@ You should set chunk-unloads to 0s in paper config file to enable void
 trading. Or use Kaiivoid plugin.
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index 2d5650889bea174605adbc98461a015a474e0801..37f6a0a2946f59be4c1d582f8c4fd696f3b5a11b 100644
+index 2b6fab57f46373ceaab5c153f4506d62cc262943..8521a5d266d2337f8ebe2a5d507672236b3e7deb 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 @@ -126,6 +126,9 @@ public class KaiijuWorldConfig {
@@ -21,11 +21,12 @@ index 2d5650889bea174605adbc98461a015a474e0801..37f6a0a2946f59be4c1d582f8c4fd696
 +        fixVoidTrading = getBoolean("gameplay.fix-void-trading", fixVoidTrading);
      }
  }
+\ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index b194f3448b5199e1204da31e1408f2e80803a77d..4f4331fb94b5bd4cc9d64d3bcd7eadeade0a5b5c 100644
+index 90d78ddf8518c0df307cdaa8b7cfb5549491c6e5..91ad0fe2de19815ac3073ac3cb0f8f10d88417fd 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -3011,7 +3011,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+@@ -2816,7 +2816,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ca.spottedleaf.
              // Spigot Start
              if (entity.getBukkitEntity() instanceof org.bukkit.inventory.InventoryHolder && (!(entity instanceof ServerPlayer) || entity.getRemovalReason() != Entity.RemovalReason.KILLED)) { // SPIGOT-6876: closeInventory clears death message
                  // Paper start - Fix merchant inventory not closing on entity removal

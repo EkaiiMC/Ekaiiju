@@ -6,14 +6,13 @@ Subject: [PATCH] Experimental gameplay: Add option to disable OW/Nether 8:1
 
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-index eda8546afab3215406c76e891729c4e6f4759673..11060f648142682207f5dc57ba7d31eb92b2ecf2 100644
+index eda8546afab3215406c76e891729c4e6f4759673..b64565bf748c4919e7eeec8f6a294374b78ec010 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuConfig.java
-@@ -211,4 +211,11 @@ public class KaiijuConfig {
+@@ -211,4 +211,10 @@ public class KaiijuConfig {
  
      private static void gameplaySettings() {
      }
-+
 +
 +    public static boolean disableOWNetherScale = false; // Changes 8:1 ratio between Nether and OW to 1:1
 +
@@ -22,13 +21,13 @@ index eda8546afab3215406c76e891729c4e6f4759673..11060f648142682207f5dc57ba7d31eb
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index fad6a7185e8e9ea160b47ec9da56d08af9df8396..b59823ddded258f33b96ac0e167fcc4468078860 100644
+index 2ccc358daae43dcebf03db64526f17fbd9df23f8..450044379b688c7b7dee11090e02979fe8501bd3 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -4258,6 +4258,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -4252,6 +4252,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
  
                  WorldBorder destinationBorder = destination.getWorldBorder();
-                 double dimensionScale = DimensionType.getTeleportationScale(origin.dimensionType(), destination.dimensionType());
+                 double dimensionScale = net.minecraft.world.level.dimension.DimensionType.getTeleportationScale(origin.dimensionType(), destination.dimensionType());
 +                if (dev.kaiijumc.kaiiju.KaiijuConfig.disableOWNetherScale) dimensionScale = 1; // Kaiiju
                  BlockPos targetPos = destination.getWorldBorder().clampToBounds(this.getX() * dimensionScale, this.getY(), this.getZ() * dimensionScale);
  

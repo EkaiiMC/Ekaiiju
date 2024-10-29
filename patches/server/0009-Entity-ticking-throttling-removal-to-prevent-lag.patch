@@ -5,7 +5,7 @@ Subject: [PATCH] Entity ticking throttling & removal to prevent lag.
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index ed2a0c65835c4b6e8591a908a3d4e2969c6e1319..703ef4e3feec9059e078882e8801d9a217344d19 100644
+index 87c0809b2393270703f3fe80be1a48651ab0cebb..324427f149559e523ef5cc1a0af24d4275445383 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -14,6 +14,7 @@ val alsoShade: Configuration by configurations.creating
@@ -163,7 +163,7 @@ index 0000000000000000000000000000000000000000..887ea85ca2a03796bfa5bf62f27d1a7a
 +}
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuEntityThrottler.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuEntityThrottler.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..eb690efacf083e4ff3e321578b12c534e6a40196
+index 0000000000000000000000000000000000000000..311b2b24b99d21d28efe048adb9dc8eb993c4564
 --- /dev/null
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuEntityThrottler.java
 @@ -0,0 +1,84 @@
@@ -251,8 +251,9 @@ index 0000000000000000000000000000000000000000..eb690efacf083e4ff3e321578b12c534
 +        }
 +    }
 +}
+\ No newline at end of file
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index f5ff7806b21bda96b74c20a96a1dcb6e0e9a5dad..2ee7f2e2a2fd4465269e3c2374b84148d07d961a 100644
+index 29e7c6784a6b4eff075975e6409c4566c0f156a2..ae1dc5b0fdd44535466d5d0a7d6416873d389f0a 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 @@ -123,7 +123,10 @@ public class KaiijuWorldConfig {
@@ -262,12 +263,12 @@ index f5ff7806b21bda96b74c20a96a1dcb6e0e9a5dad..2ee7f2e2a2fd4465269e3c2374b84148
 +    public boolean enableEntityThrottling = false;
 +
      private void optimizationSettings() {
-+      enableEntityThrottling = getBoolean("optimization.enable-entity-throttling", enableEntityThrottling);
++        enableEntityThrottling = getBoolean("optimization.enable-entity-throttling", enableEntityThrottling);
      }
  
      public boolean fixVoidTrading = true;
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/command/KaiijuCommand.java b/src/main/java/dev/kaiijumc/kaiiju/command/KaiijuCommand.java
-index 202a6d9ef9116706493f0b0f3569638b146641da..229dcd1b3f25456c259d8e9101709a7f3c7741a1 100644
+index 6fac162e0ec057af9f3336314d5663554cef0490..efecc7e132c67577577c99bfcf98e2b4ddae14ab 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/command/KaiijuCommand.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/command/KaiijuCommand.java
 @@ -1,6 +1,7 @@
@@ -287,22 +288,22 @@ index 202a6d9ef9116706493f0b0f3569638b146641da..229dcd1b3f25456c259d8e9101709a7f
                  level.kaiijuConfig.reload();
              }
 diff --git a/src/main/java/io/papermc/paper/threadedregions/RegionizedWorldData.java b/src/main/java/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index 0180d319f1d79ee48ac71afe7f27472bd947bb4b..21da13516500c8abbeaf4e5ba36ee38e631d2052 100644
+index cd89a11ff94dfbb9c9e259b85f931bd0d160c06e..aee57665bf58a9e745dc08baaeae7397cd8b1b89 100644
 --- a/src/main/java/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/src/main/java/io/papermc/paper/threadedregions/RegionizedWorldData.java
 @@ -334,6 +334,7 @@ public final class RegionizedWorldData {
-     private final ReferenceList<Entity> toProcessTrackingUnloading = new ReferenceList<>();
+     private final ReferenceList<Entity> loadedEntities = new ReferenceList<>(EMPTY_ENTITY_ARRAY);
      private final IteratorSafeOrderedReferenceSet<Entity> entityTickList = new IteratorSafeOrderedReferenceSet<>();
      private final IteratorSafeOrderedReferenceSet<Mob> navigatingMobs = new IteratorSafeOrderedReferenceSet<>();
 +    public final dev.kaiijumc.kaiiju.KaiijuEntityThrottler entityThrottler = new dev.kaiijumc.kaiiju.KaiijuEntityThrottler(); // Kaiiju
+     public final ReferenceList<Entity> trackerEntities = new ReferenceList<>(EMPTY_ENTITY_ARRAY); // Moonrise - entity tracker
+     public final ReferenceList<Entity> trackerUnloadedEntities = new ReferenceList<>(EMPTY_ENTITY_ARRAY); // Moonrise - entity tracker
  
-     // block ticking
-     private final ObjectLinkedOpenHashSet<BlockEventData> blockEvents = new ObjectLinkedOpenHashSet<>();
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 4a652e65804a67a70d283b16e7224864398e6ee7..22e7b6f6dfcdc0b5fba24105fb1a7efbec2f91ca 100644
+index 916e7c2847d53b8a480d96355f1386dad696163d..3201d9c30de8cb6b161913d835ec8f1ba5c95d83 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -239,6 +239,12 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -245,6 +245,12 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
              DedicatedServer.LOGGER.error("Unable to load server configuration", e);
              return false;
          }
@@ -316,10 +317,10 @@ index 4a652e65804a67a70d283b16e7224864398e6ee7..22e7b6f6dfcdc0b5fba24105fb1a7efb
          // Kaiiju end
          com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // Paper - load version history now
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 4f4331fb94b5bd4cc9d64d3bcd7eadeade0a5b5c..c73138ffd8613337b5823fcfda957c767474b7ee 100644
+index 91ad0fe2de19815ac3073ac3cb0f8f10d88417fd..59324c963604a1f012a7b7602cac0a498f0f11a8 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -990,6 +990,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+@@ -801,6 +801,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ca.spottedleaf.
                  } finally { profiler.stopTimer(ca.spottedleaf.leafprofiler.LProfilerRegistry.DRAGON_FIGHT_TICK); } // Folia - profiler
              }
  
@@ -327,7 +328,7 @@ index 4f4331fb94b5bd4cc9d64d3bcd7eadeade0a5b5c..c73138ffd8613337b5823fcfda957c76
              org.spigotmc.ActivationRange.activateEntities(this); // Spigot
              this.timings.entityTick.startTiming(); // Spigot
              profiler.startTimer(ca.spottedleaf.leafprofiler.LProfilerRegistry.ENTITY_TICK); try { // Folia - profiler
-@@ -1013,6 +1014,13 @@ public class ServerLevel extends Level implements WorldGenLevel {
+@@ -824,6 +825,13 @@ public class ServerLevel extends Level implements WorldGenLevel, ca.spottedleaf.
                                  entity.stopRiding();
                              }
  
@@ -341,7 +342,7 @@ index 4f4331fb94b5bd4cc9d64d3bcd7eadeade0a5b5c..c73138ffd8613337b5823fcfda957c76
                              gameprofilerfiller.push("tick");
                              this.guardEntityTick(this::tickNonPassenger, entity);
                              gameprofilerfiller.pop();
-@@ -1021,6 +1029,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+@@ -832,6 +840,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ca.spottedleaf.
                  }
              });
              } finally { profiler.stopTimer(ca.spottedleaf.leafprofiler.LProfilerRegistry.ENTITY_TICK); } // Folia - profiler
@@ -350,7 +351,7 @@ index 4f4331fb94b5bd4cc9d64d3bcd7eadeade0a5b5c..c73138ffd8613337b5823fcfda957c76
              this.timings.tickEntities.stopTiming(); // Spigot
              gameprofilerfiller.pop();
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 1925109b2eb53fb65a5554eb82c021f06ed63bf6..85929a947ede7540386ddb44561cd20dafcb5773 100644
+index 66b685d22f21f8b7ba0dce3c9bc523458280f266..76f3bedffd42946d76bdaf8973370a1bde43a75a 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -182,6 +182,11 @@ public class Main {

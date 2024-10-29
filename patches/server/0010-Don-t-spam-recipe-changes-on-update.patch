@@ -5,7 +5,7 @@ Subject: [PATCH] Don't spam recipe changes on update
 
 
 diff --git a/src/main/java/net/minecraft/server/PlayerAdvancements.java b/src/main/java/net/minecraft/server/PlayerAdvancements.java
-index c7e1f2bac3eca9bb72bf1f8c26cccb2905e1ddfc..40d6486fdd9a2953ade7c750eadb7ea1a116173d 100644
+index 862a4bf003b7f810fb57dbcd150a1417c902b633..5085c6675d27fc8287d3b242796461c3099bd647 100644
 --- a/src/main/java/net/minecraft/server/PlayerAdvancements.java
 +++ b/src/main/java/net/minecraft/server/PlayerAdvancements.java
 @@ -199,7 +199,7 @@ public class PlayerAdvancements {
@@ -18,7 +18,7 @@ index c7e1f2bac3eca9bb72bf1f8c26cccb2905e1ddfc..40d6486fdd9a2953ade7c750eadb7ea1
                  this.startProgress(advancementholder, advancementprogress);
                  this.progressChanged.add(advancementholder);
 diff --git a/src/main/java/net/minecraft/stats/ServerRecipeBook.java b/src/main/java/net/minecraft/stats/ServerRecipeBook.java
-index 4103ddf16164e3992fef0765d368282572537e29..fe69cd06457ada65ced4ee32b815360a435e6c55 100644
+index 8a2584deccbf19de8a18fcfcb9c65318b60afe57..8650f7729693cac721e313ba0284f63f01b3d111 100644
 --- a/src/main/java/net/minecraft/stats/ServerRecipeBook.java
 +++ b/src/main/java/net/minecraft/stats/ServerRecipeBook.java
 @@ -125,7 +125,7 @@ public class ServerRecipeBook extends RecipeBook {

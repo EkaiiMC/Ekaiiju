@@ -17,7 +17,7 @@ index b844aa96f533f5e55b6483d079b91f8f980d6229..94f16629b6c8a8be0df49f72744cf09e
 +    }
  }
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index 87ca934473f3b9553c1b9b3ed60e0fa07838c711..ffa090cf3f72ae7cf2b6352b2de38e152f032a60 100644
+index dd4c3ca77acb3aeefc69b8eb948b8b202ff87a19..224c373dda3ff4b32dadaa263ad781065d476f70 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 @@ -122,4 +122,7 @@ public class KaiijuWorldConfig {
@@ -28,3 +28,4 @@ index 87ca934473f3b9553c1b9b3ed60e0fa07838c711..ffa090cf3f72ae7cf2b6352b2de38e15
 +    private void optimizationSettings() {
 +    }
  }
+\ No newline at end of file

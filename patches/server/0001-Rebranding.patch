@@ -5,7 +5,7 @@ Subject: [PATCH] Rebranding
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index eb2f9941b24af591f1e56339b97f5284a765cf81..a4ff59979fa99d1d8f4b44686c0420b467eb4a65 100644
+index c2f2ba1df68e9823c56287f1bea23fb6d6a781a2..87c0809b2393270703f3fe80be1a48651ab0cebb 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -13,7 +13,7 @@ configurations.named(log4jPlugins.compileClasspathConfigurationName) {
@@ -17,7 +17,7 @@ index eb2f9941b24af591f1e56339b97f5284a765cf81..a4ff59979fa99d1d8f4b44686c0420b4
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.21.0")
      implementation("net.minecrell:terminalconsoleappender:1.3.0")
-@@ -80,14 +80,14 @@ tasks.jar {
+@@ -85,14 +85,14 @@ tasks.jar {
          val gitBranch = git("rev-parse", "--abbrev-ref", "HEAD").getText().trim() // Paper
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
@@ -94,10 +94,10 @@ index 29bd788ae8bc61c1e62a4f84b9e259931a7041ce..7f8c61d13c5f02074002e2b6af2b3ac7
          if (buildNumber.isPresent()) {
              distance = fetchDistanceFromSiteApi(build, buildNumber.getAsInt());
 diff --git a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
-index c5d5648f4ca603ef2b1df723b58f9caf4dd3c722..54ab8a1a27ca298b104d4f3bd5d60b16340c4a3c 100644
+index 6ee39b534b8d992655bc0cef3c299d12cbae0034..0118095bfe09816b078f1421bef647a790a54ab5 100644
 --- a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
 +++ b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
-@@ -17,7 +17,7 @@ public final class PaperConsole extends SimpleTerminalConsole {
+@@ -20,7 +20,7 @@ public final class PaperConsole extends SimpleTerminalConsole {
      @Override
      protected LineReader buildReader(LineReaderBuilder builder) {
          builder
@@ -106,37 +106,11 @@ index c5d5648f4ca603ef2b1df723b58f9caf4dd3c722..54ab8a1a27ca298b104d4f3bd5d60b16
                  .variable(LineReader.HISTORY_FILE, java.nio.file.Paths.get(".console_history"))
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
-diff --git a/src/main/java/net/minecraft/CrashReport.java b/src/main/java/net/minecraft/CrashReport.java
-index 4f3cc14d48690bb183d09bb7a5ba1e23e8a0c08a..58f516100fe919a19ad8be341eccbdc4b67a9053 100644
---- a/src/main/java/net/minecraft/CrashReport.java
-+++ b/src/main/java/net/minecraft/CrashReport.java
-@@ -127,7 +127,7 @@ public class CrashReport {
-         stringbuilder.append("---- Minecraft Crash Report ----\n");
-         stringbuilder.append("// ");
-         stringbuilder.append(CrashReport.getErrorComment());
--        stringbuilder.append("\n\n");
-+        stringbuilder.append("// DO NOT REPORT THIS TO PAPER/FOLIA! REPORT TO KAIIJU INSTEAD!"); // Kaiiju
-         stringbuilder.append("Time: ");
-         stringbuilder.append(CrashReport.DATE_TIME_FORMATTER.format(ZonedDateTime.now()));
-         stringbuilder.append("\n");
-diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 355c8408da189a4805e206db0932c41f940930f0..ff1fb452d29f8dd7925d30541c857eaebd223bfd 100644
---- a/src/main/java/net/minecraft/server/MinecraftServer.java
-+++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1025,7 +1025,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
-         shutdownThread = Thread.currentThread();
-         org.spigotmc.WatchdogThread.doStop(); // Paper
-         if (false && !isSameThread()) { // Folia - region threading
--            MinecraftServer.LOGGER.info("Stopping main thread (Ignore any thread death message you see! - DO NOT REPORT THREAD DEATH TO PAPER)");
-+            MinecraftServer.LOGGER.info("Stopping main thread (Ignore any thread death message you see! - DO NOT REPORT THREAD DEATH TO KAIIJU)"); // Kaiiju
-             while (this.getRunningThread().isAlive()) {
-                 this.getRunningThread().stop();
-                 try {
 diff --git a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
-index b00e3b9b628f3d2a2fdbf1d2c77904963c16d3ac..aebc83a34b33cf7d03c34cb8009dc2d0d8af2a8d 100644
+index 5a24902b735cbd64dd5cd5ad46b096c4bdfa799f..67abf33d920fffafd2d57a2699a307c3541241d0 100644
 --- a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
 +++ b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftScheduler.java
-@@ -503,7 +503,7 @@ public class CraftScheduler implements BukkitScheduler {
+@@ -492,7 +492,7 @@ public class CraftScheduler implements BukkitScheduler {
                  this.parsePending();
              } else {
                  // this.debugTail = this.debugTail.setNext(new CraftAsyncDebugger(currentTick + CraftScheduler.RECENT_TICKS, task.getOwner(), task.getTaskClass())); // Paper
@@ -159,10 +133,10 @@ index e9b6ca3aa25e140467ae866d572483050ea3fa0e..5df2b0fceebaaa863f4f143c8f29e808
  
          if (stream != null) {
 diff --git a/src/main/java/org/spigotmc/WatchdogThread.java b/src/main/java/org/spigotmc/WatchdogThread.java
-index 6db566e3111ec08a99aa429624979cb83a85e272..65c4c022e551ae70b1176aae4e98d5f7dcb77031 100644
+index 64e0acf28fc241b16a7bc8d3807062fd7758ed7f..ebd62a6913be07710b2b99c2e55facf0ea3ba594 100644
 --- a/src/main/java/org/spigotmc/WatchdogThread.java
 +++ b/src/main/java/org/spigotmc/WatchdogThread.java
-@@ -155,14 +155,14 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
+@@ -155,14 +155,14 @@ public class WatchdogThread extends ca.spottedleaf.moonrise.common.util.TickThre
                  if (isLongTimeout) {
                  // Paper end
                  log.log( Level.SEVERE, "------------------------------" );
@@ -180,7 +154,7 @@ index 6db566e3111ec08a99aa429624979cb83a85e272..65c4c022e551ae70b1176aae4e98d5f7
                  //
                  if ( net.minecraft.world.level.Level.lastPhysicsProblem != null )
                  {
-@@ -184,12 +184,12 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
+@@ -184,12 +184,12 @@ public class WatchdogThread extends ca.spottedleaf.moonrise.common.util.TickThre
                  // Paper end
                  } else
                  {
@@ -192,10 +166,10 @@ index 6db566e3111ec08a99aa429624979cb83a85e272..65c4c022e551ae70b1176aae4e98d5f7
                  log.log( Level.SEVERE, "------------------------------" );
 -                log.log( Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Paper!):" ); // Paper
 +                log.log( Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Kaiiju!):" ); // Paper // Kaiiju
-                 io.papermc.paper.chunk.system.scheduling.ChunkTaskScheduler.dumpAllChunkLoadInfo(isLongTimeout); // Paper - rewrite chunk system
+                 ca.spottedleaf.moonrise.patches.chunk_system.scheduling.ChunkTaskScheduler.dumpAllChunkLoadInfo(MinecraftServer.getServer(), isLongTimeout); // Paper - rewrite chunk system
                  this.dumpTickingInfo(); // Paper - log detailed tick information
                  WatchdogThread.dumpThread( ManagementFactory.getThreadMXBean().getThreadInfo( MinecraftServer.getServer().serverThread.getId(), Integer.MAX_VALUE ), log );
-@@ -205,7 +205,7 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
+@@ -205,7 +205,7 @@ public class WatchdogThread extends ca.spottedleaf.moonrise.common.util.TickThre
                      WatchdogThread.dumpThread( thread, log );
                  }
                  } else {

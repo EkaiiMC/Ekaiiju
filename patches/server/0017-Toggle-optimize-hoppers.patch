@@ -6,7 +6,7 @@ Subject: [PATCH] Toggle optimize hoppers
 Paper optimize hoppers patch break a lot of technical redstone farms because of piston updates. (Example: twiti888 wood farm)
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index 3f7aa3aa4b5c5b330243338cdde6306756e83fba..8b9d44b7c6da28058b064b05de02a81f02db9a71 100644
+index 484ccbb68375287f1304844ec0461d8054991117..6c81d598652bf1f3887a00e919290a01f636d522 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 @@ -125,10 +125,12 @@ public class KaiijuWorldConfig {
@@ -16,17 +16,17 @@ index 3f7aa3aa4b5c5b330243338cdde6306756e83fba..8b9d44b7c6da28058b064b05de02a81f
 +    public boolean optimizeHoppers = true;
  
      private void optimizationSettings() {
-       enableEntityThrottling = getBoolean("optimization.enable-entity-throttling", enableEntityThrottling);
+         enableEntityThrottling = getBoolean("optimization.enable-entity-throttling", enableEntityThrottling);
          disableAchievements = getBoolean("optimization.disable-achievements", disableAchievements);
 +        optimizeHoppers = getBoolean("optimization.optimize-hoppers", optimizeHoppers);
      }
  
      public boolean fixVoidTrading = true;
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4e9e99b15 100644
+index 1035a68aaeb9c50752a03cd72fe65c5eb7e8746c..e229fa63254a4a2d3b4f6aa8056c0af41c6caf89 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-@@ -455,50 +455,52 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -455,54 +455,55 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
              if (HopperBlockEntity.isFullContainer(iinventory, enumdirection)) {
                  return false;
              } else {
@@ -39,6 +39,7 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 -                //    if (!itemstack.isEmpty()) {
 -                //        int j = itemstack.getCount();
 -                //        // CraftBukkit start - Call event when pushing items into other inventories
+-                //        ItemStack original = itemstack.copy();
 -                //        CraftItemStack oitemstack = CraftItemStack.asCraftMirror(blockEntity.removeItem(i, world.spigotConfig.hopperAmount)); // Spigot
 -
 -                //        Inventory destinationInventory;
@@ -54,10 +55,11 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 -                //        InventoryMoveItemEvent event = new InventoryMoveItemEvent(tileentityhopper.getOwner().getInventory(), oitemstack, destinationInventory, true);
 -                //        world.getCraftServer().getPluginManager().callEvent(event);
 -                //        if (event.isCancelled()) {
--                //            blockEntity.setItem(i, itemstack);
+-                //            blockEntity.setItem(i, original);
 -                //            blockEntity.setCooldown(world.spigotConfig.hopperTransfer); // Delay hopper checks // Spigot
 -                //            return false;
 -                //        }
+-                //        int origCount = event.getItem().getAmount(); // Spigot
 -                //        ItemStack itemstack1 = HopperBlockEntity.addItem(blockEntity, iinventory, CraftItemStack.asNMSCopy(event.getItem()), enumdirection);
 -                //        // CraftBukkit end
 -
@@ -67,7 +69,10 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 -                //        }
 -
 -                //        itemstack.setCount(j);
--                //        if (j == 1) {
+-                //        // Spigot start
+-                //        itemstack.shrink(origCount - itemstack1.getCount());
+-                //        if (j <= world.spigotConfig.hopperAmount) {
+-                //          // Spigot end
 -                //            blockEntity.setItem(i, itemstack);
 -                //        }
 -                //    }
@@ -81,6 +86,7 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 +                    if (!itemstack.isEmpty()) {
 +                        int j = itemstack.getCount();
 +                        // CraftBukkit start - Call event when pushing items into other inventories
++                        ItemStack original = itemstack.copy();
 +                        CraftItemStack oitemstack = CraftItemStack.asCraftMirror(blockEntity.removeItem(i, world.spigotConfig.hopperAmount)); // Spigot
 +
 +                        Inventory destinationInventory;
@@ -96,10 +102,11 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 +                        InventoryMoveItemEvent event = new InventoryMoveItemEvent(blockEntity.getOwner().getInventory(), oitemstack, destinationInventory, true);
 +                        world.getCraftServer().getPluginManager().callEvent(event);
 +                        if (event.isCancelled()) {
-+                            blockEntity.setItem(i, itemstack);
++                            blockEntity.setItem(i, original);
 +                            blockEntity.setCooldown(world.spigotConfig.hopperTransfer); // Delay hopper checks // Spigot
 +                            return false;
 +                        }
++                        int origCount = event.getItem().getAmount(); // Spigot
 +                        ItemStack itemstack1 = HopperBlockEntity.addItem(blockEntity, iinventory, CraftItemStack.asNMSCopy(event.getItem()), enumdirection);
 +                        // CraftBukkit end
 +
@@ -109,19 +116,20 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 +                        }
 +
 +                        itemstack.setCount(j);
-+                        if (j == 1) {
++                        // Spigot start
++                        itemstack.shrink(origCount - itemstack1.getCount());
++                        if (j <= world.spigotConfig.hopperAmount) {
++                          // Spigot end
 +                            blockEntity.setItem(i, itemstack);
 +                        }
 +                    }
 +                }
 +
-+                return false;
++                 return false;
                  // Paper end - Perf: Optimize Hoppers
-+                // Kaiiju end
              }
          }
-     }
-@@ -560,7 +562,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -565,7 +566,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
  
          if (iinventory != null) {
              Direction enumdirection = Direction.DOWN;
@@ -130,7 +138,7 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
              int[] aint = HopperBlockEntity.getSlots(iinventory, enumdirection);
              int i = aint.length;
  
-@@ -596,47 +598,49 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -601,51 +602,52 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
          ItemStack itemstack = iinventory.getItem(i);
  
          if (!itemstack.isEmpty() && HopperBlockEntity.canTakeItemFromContainer(ihopper, iinventory, itemstack, i, enumdirection)) {
@@ -139,6 +147,7 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 -            return hopperPull(world, ihopper, iinventory, itemstack, i);
 -        //    int j = itemstack.getCount();
 -        //    // CraftBukkit start - Call event on collection of items from inventories into the hopper
+-        //    ItemStack original = itemstack.copy();
 -        //    CraftItemStack oitemstack = CraftItemStack.asCraftMirror(iinventory.removeItem(i, world.spigotConfig.hopperAmount)); // Spigot
 -
 -        //    Inventory sourceInventory;
@@ -155,7 +164,7 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 -
 -        //    Bukkit.getServer().getPluginManager().callEvent(event);
 -        //    if (event.isCancelled()) {
--        //        iinventory.setItem(i, itemstack);
+-        //        iinventory.setItem(i, original);
 -
 -        //        if (ihopper instanceof HopperBlockEntity) {
 -        //            ((HopperBlockEntity) ihopper).setCooldown(world.spigotConfig.hopperTransfer); // Spigot
@@ -163,6 +172,7 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 -
 -        //        return false;
 -        //    }
+-        //    int origCount = event.getItem().getAmount(); // Spigot
 -        //    ItemStack itemstack1 = HopperBlockEntity.addItem(iinventory, ihopper, CraftItemStack.asNMSCopy(event.getItem()), null);
 -        //    // CraftBukkit end
 -
@@ -172,12 +182,16 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 -        //    }
 -
 -        //    itemstack.setCount(j);
--        //    if (j == 1) {
+-        //    // Spigot start
+-        //    itemstack.shrink(origCount - itemstack1.getCount());
+-        //    if (j <= world.spigotConfig.hopperAmount) {
+-        //        // Spigot end
 -        //        iinventory.setItem(i, itemstack);
 -        //    }
 +            if (world.kaiijuConfig.optimizeHoppers) return hopperPull(world, ihopper, iinventory, itemstack, i);
 +            int j = itemstack.getCount();
 +            // CraftBukkit start - Call event on collection of items from inventories into the hopper
++            ItemStack original = itemstack.copy();
 +            CraftItemStack oitemstack = CraftItemStack.asCraftMirror(iinventory.removeItem(i, world.spigotConfig.hopperAmount)); // Spigot
 +
 +            Inventory sourceInventory;
@@ -194,7 +208,7 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 +
 +            Bukkit.getServer().getPluginManager().callEvent(event);
 +            if (event.isCancelled()) {
-+                iinventory.setItem(i, itemstack);
++                iinventory.setItem(i, original);
 +
 +                if (ihopper instanceof HopperBlockEntity) {
 +                    ((HopperBlockEntity) ihopper).setCooldown(world.spigotConfig.hopperTransfer); // Spigot
@@ -202,6 +216,7 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 +
 +                return false;
 +            }
++            int origCount = event.getItem().getAmount(); // Spigot
 +            ItemStack itemstack1 = HopperBlockEntity.addItem(iinventory, ihopper, CraftItemStack.asNMSCopy(event.getItem()), null);
 +            // CraftBukkit end
 +
@@ -211,11 +226,12 @@ index 1280c358748bbb08f0361acd4ebc095bf6bc3496..0c73db57bfa7dfef397c50766cf69cf4
 +            }
 +
 +            itemstack.setCount(j);
-+            if (j == 1) {
++            // Spigot start
++            itemstack.shrink(origCount - itemstack1.getCount());
++            if (j <= world.spigotConfig.hopperAmount) {
++                // Spigot end
 +                iinventory.setItem(i, itemstack);
 +            }
              // Paper end - Perf: Optimize Hoppers
-+            // Kaiiju end
          }
  
-         return false;

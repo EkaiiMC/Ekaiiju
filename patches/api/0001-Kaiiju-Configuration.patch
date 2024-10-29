@@ -5,10 +5,10 @@ Subject: [PATCH] Kaiiju Configuration
 
 
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index d4c5b06fe4be177442ef1abaf1b223c6c2845930..3f029ee14609fe7ed045d7561511e3cffc700b35 100644
+index 10f6eb1756de71960f1c0565366d5f262c7641f1..2bc24e044d67c4fdcd4cc07ffa75721f36c1046e 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2257,6 +2257,13 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2265,6 +2265,13 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
          }
          // Paper end
  
