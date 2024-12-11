@@ -1,7 +1,7 @@
 name: Release Jars
 on: [push, workflow_dispatch]
 env:
-  version: '1.21.1'
+  version: '1.21.4'
   branch: master
 jobs:
   paperclip:
