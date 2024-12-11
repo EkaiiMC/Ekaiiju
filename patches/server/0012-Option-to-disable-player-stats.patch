@@ -21,10 +21,10 @@ index 22a1a2fc8b8fb5fa0cf79f2d5d2c710fd4f71d26..09a69d2c3d1a441c4fc0145116d07508
  
      private static void gameplaySettings() {
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index e4a68f43c1a48fe8193623c646eb40bc5f664c76..aa6e7e03697023c2c755e0ce119e76e9d708e5d1 100644
+index 23f852ede94bce4d000c8fcaa8fba5d4800b533c..3e692020ae1eba46a5f9722d4f2b0ec4ee374d6a 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -2414,6 +2414,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
+@@ -2628,6 +2628,7 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
  
      @Override
      public void awardStat(Stat<?> stat, int amount) {

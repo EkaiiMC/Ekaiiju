@@ -23,10 +23,10 @@ index b64565bf748c4919e7eeec8f6a294374b78ec010..80b13d4534cb887718a39f06a0dfd5d7
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/LeavesBlock.java b/src/main/java/net/minecraft/world/level/block/LeavesBlock.java
-index 07d9696c9bf0a783367a76ebad2273a2c495bc8f..6d570471c059ac0a9f30149778c2ec29baccb8f6 100644
+index de9cbe4868276011d69536a0532ff57fe7a77bf3..a81c046a3f9aef7a531ab794ddbf7d393921bbd9 100644
 --- a/src/main/java/net/minecraft/world/level/block/LeavesBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/LeavesBlock.java
-@@ -76,8 +76,21 @@ public class LeavesBlock extends Block implements SimpleWaterloggedBlock {
+@@ -78,8 +78,21 @@ public class LeavesBlock extends Block implements SimpleWaterloggedBlock {
          return !(Boolean) state.getValue(LeavesBlock.PERSISTENT) && (Integer) state.getValue(LeavesBlock.DISTANCE) == 7;
      }
  

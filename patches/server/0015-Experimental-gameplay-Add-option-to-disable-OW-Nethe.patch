@@ -21,14 +21,14 @@ index eda8546afab3215406c76e891729c4e6f4759673..b64565bf748c4919e7eeec8f6a294374
 +    }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 2ccc358daae43dcebf03db64526f17fbd9df23f8..450044379b688c7b7dee11090e02979fe8501bd3 100644
+index c450b1115985109b43a0bf5eefae7c47c92f91c0..d6e75822cebd38381a575f07e300e6ebea60f56e 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -4252,6 +4252,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -4492,6 +4492,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
  
                  WorldBorder destinationBorder = destination.getWorldBorder();
                  double dimensionScale = net.minecraft.world.level.dimension.DimensionType.getTeleportationScale(origin.dimensionType(), destination.dimensionType());
 +                if (dev.kaiijumc.kaiiju.KaiijuConfig.disableOWNetherScale) dimensionScale = 1; // Kaiiju
                  BlockPos targetPos = destination.getWorldBorder().clampToBounds(this.getX() * dimensionScale, this.getY(), this.getZ() * dimensionScale);
  
-                 ca.spottedleaf.concurrentutil.completable.Completable<BlockUtil.FoundRectangle> portalFound
+                 ca.spottedleaf.concurrentutil.completable.CallbackCompletable<BlockUtil.FoundRectangle> portalFound

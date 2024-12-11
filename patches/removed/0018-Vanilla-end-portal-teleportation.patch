@@ -5,15 +5,15 @@ Subject: [PATCH] Vanilla end portal teleportation
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index b59823ddded258f33b96ac0e167fcc4468078860..9f68450cedd4ba3a5fcd65319a0a8824249047cf 100644
+index d6e75822cebd38381a575f07e300e6ebea60f56e..479dcf7e6042607cbf4c1d5b44894a5e86049fc1 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -4202,12 +4202,17 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -4428,13 +4428,18 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
                          targetPos, 16, // load 16 blocks to be safe from block physics
-                         ca.spottedleaf.concurrentutil.executor.standard.PrioritisedExecutor.Priority.HIGH,
+                         ca.spottedleaf.concurrentutil.util.Priority.HIGH,
                          (chunks) -> {
--                            ServerLevel.makeObsidianPlatform(destination, null, targetPos);
-+                            //ServerLevel.makeObsidianPlatform(destination, null, targetPos); // Kaiiju - Vanilla end teleportation - moved down
+-                            net.minecraft.world.level.levelgen.feature.EndPlatformFeature.createEndPlatform(destination, targetPos.below(), true, null);
++                            //net.minecraft.world.level.levelgen.feature.EndPlatformFeature.createEndPlatform(destination, targetPos.below(), true, null); // Kaiiju - Vanilla end teleportation - moved down
  
 +                            // Kaiiju start - Vanilla end teleportation
 +                            Vec3 finalPos;
@@ -23,28 +23,32 @@ index b59823ddded258f33b96ac0e167fcc4468078860..9f68450cedd4ba3a5fcd65319a0a8824
                              // the portal obsidian is placed at targetPos.y - 2, so if we want to place the entity
                              // on the obsidian, we need to spawn at targetPos.y - 1
                              portalInfoCompletable.complete(
--                                new PortalInfo(Vec3.atBottomCenterOf(targetPos.below()), Vec3.ZERO, 90.0f, 0.0f, destination, null)
-+                                new PortalInfo(finalPos, this.getDeltaMovement(), 90.0f, 0.0f, destination, null) // Kaiiju - Vanilla end teleportation
-                             );
-                         }
-                     );
-@@ -4395,6 +4400,10 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
-         if (!this.canPortalAsync(takePassengers)) {
+                                 new net.minecraft.world.level.portal.TeleportTransition(
+-                                    destination, Vec3.atBottomCenterOf(targetPos.below()), Vec3.ZERO, 90.0f, 0.0f,
++                                    destination, finalPos, this.getDeltaMovement(), 90.0f, 0.0f,
+                                     TeleportTransition.PLAY_PORTAL_SOUND.then(TeleportTransition.PLACE_PORTAL_TICKET),
+                                     org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.END_PORTAL
+                                 )
+@@ -4632,6 +4637,11 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
              return false;
          }
-+        // Kaiiju start - sync end platform spawning & entity teleportation
-+        final java.util.function.Consumer<Entity> tpComplete = type == PortalType.END && destination.getTypeKey() == LevelStem.END ?
-+              e -> ServerLevel.makeObsidianPlatform(destination, null, ServerLevel.END_SPAWN_POINT) : teleportComplete;
-+        // Kaiiju end
  
++        // Kaiiju start - sync end platform spawning & entity teleportation
++        final java.util.function.Consumer<Entity> tpComplete = type == PortalType.END && destination.getTypeKey() == net.minecraft.world.level.dimension.LevelStem.END ?
++              e -> net.minecraft.world.level.levelgen.feature.EndPlatformFeature.createEndPlatform(destination, ServerLevel.END_SPAWN_POINT.below(), true, null) : teleportComplete;
++        // Kaiiju end
++
          Vec3 initialPosition = this.position();
          ChunkPos initialPositionChunk = new ChunkPos(
-@@ -4453,7 +4462,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
-             // place
-             passengerTree.root.placeInAsync(
-                 originWorld, destination, Entity.TELEPORT_FLAG_LOAD_CHUNK | (takePassengers ? Entity.TELEPORT_FLAG_TELEPORT_PASSENGERS : 0L),
--                passengerTree, teleportComplete
-+                passengerTree, tpComplete // Kaiiju - vanilla end teleportation
-             );
-         });
+             ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkX(initialPosition),
+@@ -4695,8 +4705,8 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+                         info.postTeleportTransition().onTransition(teleported);
+                     }
  
+-                    if (teleportComplete != null) {
+-                        teleportComplete.accept(teleported);
++                    if (tpComplete != null) {
++                        tpComplete.accept(teleported);
+                     }
+                 }
+             );

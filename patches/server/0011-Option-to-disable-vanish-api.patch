@@ -20,10 +20,10 @@ index f0bd3753d3984d83c49d49e159dc7fc6ffb48bfd..22a1a2fc8b8fb5fa0cf79f2d5d2c710f
  
      private static void gameplaySettings() {
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 74524dcd4539a31e9d0037cd607ffbfce02f414c..dee9e785655d9390021ce0e8a5667e8eb2f1e5ef 100644
+index 74cd86aea1a82f169cb50dac14a8973c97cca88d..e6654cea3a75a30edf9acfb87fff59863b9df83c 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
-@@ -1222,7 +1222,11 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -1256,7 +1256,11 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
                  // Folia end - region threading
  
                  // CraftBukkit start - respect vanish API
