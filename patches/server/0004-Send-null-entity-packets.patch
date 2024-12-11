@@ -20,22 +20,26 @@ index 2791fe6cc78cc13d969a903134c08e992a6ecdca..b844aa96f533f5e55b6483d079b91f8f
      }
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerEntity.java b/src/main/java/net/minecraft/server/level/ServerEntity.java
-index f16a69775332a08ed0e87d27acd0fc959359694c..04436560678502ff3c55d0f830d61cbe0764c542 100644
+index 103e2c414780be66324bcb9cd4ea539bbdfe12ad..29afa08bbc55f54e22d0dfde8aa1b3f31e77ac04 100644
 --- a/src/main/java/net/minecraft/server/level/ServerEntity.java
 +++ b/src/main/java/net/minecraft/server/level/ServerEntity.java
-@@ -211,6 +211,11 @@ public class ServerEntity {
+@@ -228,7 +228,14 @@ public class ServerEntity {
                          flag4 = true;
-                         flag5 = true;
                      }
+ 
+-                    if (this.entity.hasImpulse || this.trackDelta || this.entity instanceof LivingEntity && ((LivingEntity) this.entity).isFallFlying()) {
++
 +                    // Kaiiju start - Don't send null move entity packets
 +                    if (!dev.kaiijumc.kaiiju.KaiijuConfig.sendNullEntityPackets && isNullMovePacket(packet1)) {
 +                        packet1 = null;
 +                    }
 +                    // Kaiiju end
-                 }
++
++                    if ((this.trackDelta || this.entity.hasImpulse || this.entity instanceof LivingEntity && ((LivingEntity) this.entity).isFallFlying()) && this.tickCount > 0) {
+                         Vec3 vec3d1 = this.entity.getDeltaMovement();
+                         double d0 = vec3d1.distanceToSqr(this.lastSentMovement);
  
-                 if ((this.trackDelta || this.entity.hasImpulse || this.entity instanceof LivingEntity && ((LivingEntity) this.entity).isFallFlying()) && this.tickCount > 0) {
-@@ -291,6 +296,20 @@ public class ServerEntity {
+@@ -332,6 +339,20 @@ public class ServerEntity {
          });
      }
  

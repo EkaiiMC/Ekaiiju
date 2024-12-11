@@ -5,7 +5,7 @@ Subject: [PATCH] Don't spam recipe changes on update
 
 
 diff --git a/src/main/java/net/minecraft/server/PlayerAdvancements.java b/src/main/java/net/minecraft/server/PlayerAdvancements.java
-index c7e1f2bac3eca9bb72bf1f8c26cccb2905e1ddfc..40d6486fdd9a2953ade7c750eadb7ea1a116173d 100644
+index 8e2eb7b61421ceb063654826941f1a81f6f50bdf..6510cccdcb54659812d26f356c2665dc460b8ecd 100644
 --- a/src/main/java/net/minecraft/server/PlayerAdvancements.java
 +++ b/src/main/java/net/minecraft/server/PlayerAdvancements.java
 @@ -199,7 +199,7 @@ public class PlayerAdvancements {
@@ -18,15 +18,15 @@ index c7e1f2bac3eca9bb72bf1f8c26cccb2905e1ddfc..40d6486fdd9a2953ade7c750eadb7ea1
                  this.startProgress(advancementholder, advancementprogress);
                  this.progressChanged.add(advancementholder);
 diff --git a/src/main/java/net/minecraft/stats/ServerRecipeBook.java b/src/main/java/net/minecraft/stats/ServerRecipeBook.java
-index 4103ddf16164e3992fef0765d368282572537e29..fe69cd06457ada65ced4ee32b815360a435e6c55 100644
+index 5c7484ce2850a2eb698a2183b81134b89b0bbcc7..888289ae594bd816e3a860648a898aff38c5351f 100644
 --- a/src/main/java/net/minecraft/stats/ServerRecipeBook.java
 +++ b/src/main/java/net/minecraft/stats/ServerRecipeBook.java
-@@ -125,7 +125,7 @@ public class ServerRecipeBook extends RecipeBook {
-                 Optional<RecipeHolder<?>> optional = recipeManager.byKey(minecraftkey);
+@@ -159,7 +159,7 @@ public class ServerRecipeBook extends RecipeBook {
+                 ResourceKey<Recipe<?>> resourcekey = ResourceKey.create(Registries.RECIPE, ResourceLocation.parse(s));
  
-                 if (optional.isEmpty()) {
--                    ServerRecipeBook.LOGGER.error("Tried to load unrecognized recipe: {} removed now.", minecraftkey);
+                 if (!validPredicate.test(resourcekey)) {
+-                    ServerRecipeBook.LOGGER.error("Tried to load unrecognized recipe: {} removed now.", resourcekey);
 +                    //ServerRecipeBook.LOGGER.error("Tried to load unrecognized recipe: {} removed now.", minecraftkey); // Kaiiju - We already know, don't spam.
                  } else {
-                     handler.accept((RecipeHolder) optional.get());
+                     handler.accept(resourcekey);
                  }

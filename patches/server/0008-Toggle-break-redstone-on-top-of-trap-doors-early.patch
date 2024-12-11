@@ -6,7 +6,7 @@ Subject: [PATCH] Toggle break redstone on top of trap doors early
 That patch break vanilla mechanics such as portal slicing.
 
 diff --git a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
-index 37f6a0a2946f59be4c1d582f8c4fd696f3b5a11b..f5ff7806b21bda96b74c20a96a1dcb6e0e9a5dad 100644
+index 8521a5d266d2337f8ebe2a5d507672236b3e7deb..29e7c6784a6b4eff075975e6409c4566c0f156a2 100644
 --- a/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 +++ b/src/main/java/dev/kaiijumc/kaiiju/KaiijuWorldConfig.java
 @@ -127,8 +127,10 @@ public class KaiijuWorldConfig {
@@ -20,11 +20,12 @@ index 37f6a0a2946f59be4c1d582f8c4fd696f3b5a11b..f5ff7806b21bda96b74c20a96a1dcb6e
 +        breakRedstoneOnTopOfTrapDoorsEarly = getBoolean("gameplay.break-redstone-on-top-of-trap-doors-early", breakRedstoneOnTopOfTrapDoorsEarly);
      }
  }
+\ No newline at end of file
 diff --git a/src/main/java/net/minecraft/world/level/block/TrapDoorBlock.java b/src/main/java/net/minecraft/world/level/block/TrapDoorBlock.java
-index 2b5fdcb12dcd8730df24113b9a6d295f000dd9f6..dfcda840286df431b88b882ad14bcb55ac76972e 100644
+index 872e52e13293a99d45f93d90d8fa7f6aa99d1f3a..8674be2b4221f01f98bd6be9930289178636134c 100644
 --- a/src/main/java/net/minecraft/world/level/block/TrapDoorBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/TrapDoorBlock.java
-@@ -155,6 +155,7 @@ public class TrapDoorBlock extends HorizontalDirectionalBlock implements SimpleW
+@@ -159,6 +159,7 @@ public class TrapDoorBlock extends HorizontalDirectionalBlock implements SimpleW
                  // CraftBukkit end
                  // Paper start - break redstone on trapdoors early
                  boolean open = (Boolean) state.getValue(TrapDoorBlock.OPEN) != flag1;
@@ -32,7 +33,7 @@ index 2b5fdcb12dcd8730df24113b9a6d295f000dd9f6..dfcda840286df431b88b882ad14bcb55
                  // note: this must run before any state for this block/its neighborus are written to the world
                  // we allow the redstone event to fire so that plugins can block
                  if (flag1 && open) { // if we are now powered and it caused the trap door to open
-@@ -171,6 +172,7 @@ public class TrapDoorBlock extends HorizontalDirectionalBlock implements SimpleW
+@@ -175,6 +176,7 @@ public class TrapDoorBlock extends HorizontalDirectionalBlock implements SimpleW
                          }
                      }
                  }

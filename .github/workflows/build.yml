@@ -1,7 +1,7 @@
 name: Generate Jars
 on: [ push, pull_request ]
 env:
-  version: '1.20.6'
+  version: '1.21.4'
   branch: master
 jobs:
   paperclip:
@@ -25,7 +25,7 @@ jobs:
       - name: Build Paperclip jar
         run: ./gradlew createReobfPaperclipJar --stacktrace
       - name: Upload Paperclip jar
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: kaiiju.jar
           path: build/libs/kaiiju-paperclip-*-reobf.jar
